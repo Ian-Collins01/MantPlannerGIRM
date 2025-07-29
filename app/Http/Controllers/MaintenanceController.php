@@ -8,6 +8,7 @@ use App\Models\MaintenanceTask;
 use App\Models\Task;
 use App\Models\TaskHeader;
 use App\Models\MaintenanceType;
+use App\Models\Status;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -90,12 +91,19 @@ class MaintenanceController extends Controller
                     default => 0,
                 });
 
+                //Saltar sábados y domingos
+                while ($date->isWeekend()) {
+                    $date->addDay(); // Mueve al siguiente día hábil
+                }
+
                 $noticeHour = $validated['notice_hour'] ? Carbon::parse($validated['notice_hour']) : null;
                 $startHour = $validated['start_hour'] ? Carbon::parse($validated['start_hour']) : null;
                 $endHour = $validated['end_hour'] ? Carbon::parse($validated['end_hour']) : null;
 
                 $responseTime = ($noticeHour && $startHour) ? $noticeHour->diffInMinutes($startHour) : null;
                 $maintenanceTime = ($startHour && $endHour) ? $startHour->diffInMinutes($endHour) : null;
+
+                $statusNewId = Status::where('description','Nuevo')->value('id');
 
                 $maintenance = Maintenance::create([
                     'date' => $date->toDateString(),
@@ -109,6 +117,7 @@ class MaintenanceController extends Controller
                     'machine_id' => $validated['machine_id'],
                     'technician_id' => $validated['technician_id'],
                     'maintenance_type' => $validated['maintenance_type'],
+                    'status_id' => $statusNewId,
                 ]);
 
                 foreach ($taskHeaders as $taskHeader) {
@@ -124,6 +133,7 @@ class MaintenanceController extends Controller
 
                 $createdMaintenances[] = $maintenance;
             }
+
 
             DB::commit();
 

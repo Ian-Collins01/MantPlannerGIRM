@@ -18,6 +18,7 @@ class Maintenance extends Model
         'machine_id',
         'technician_id',
         'maintenance_type',
+        'status_id',
     ];
     public function machine()
     {
@@ -34,5 +35,9 @@ class Maintenance extends Model
     public function maintenanceTasks()
     {
         return $this->hasMany(MaintenanceTask::class);
+    }
+    public function status()
+    {
+        return $this->belongsTo(Status::class);
     }
 }

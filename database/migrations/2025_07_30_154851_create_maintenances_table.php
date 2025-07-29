@@ -28,6 +28,8 @@ return new class extends Migration
             $table->foreign('technician_id')->references('id')->on('users');
             $table->unsignedBigInteger('maintenance_type');
             $table->foreign('maintenance_type')->references('id')->on('maintenance_types');
+            $table->unsignedBigInteger('status_id');
+            $table->foreign('status_id')->references('id')->on('statuses');
 
             $table->timestamps();
         });

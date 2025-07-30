@@ -1,34 +1,74 @@
-.card-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 250px;
-    background: #2C3C64;
-    color: #8ACB7A;
-    font-size: 32px;
-    font-weight: 700;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: 0.4s ease, color 0.4s ease, scale 0.1s linear;
-    position: relative;
-    overflow: hidden;
-    text-align: center;
-}
+/* From Uiverse.io by rmdhnkhsn */
+            .card-card {
+                position: relative;
+                display: flex;
+                padding: 42px 32px;
+                flex-direction: column;
+                border-radius: 30px;
+                border: 2px solid #000000;
+                background: #fff;
+                transition: 1s all;
+                text-decoration: none;
+            }
 
-.card-card:hover {
-    background: #8ACB7A;
-    color: #2C3C64;
-}
+            .title-card {
+                color: #072713;
+                text-align: center;
+                font-size: 40px;
+                font-style: normal;
+                font-weight: 600;
+                line-height: 35.196px;
+                transition: 0.4s all;
+            }
 
-.card-card .p-card {
-    position: relative;
-    z-index: 2;
-}
+            .subtitle-card {
+                color: #7e8882;
+                text-align: center;
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 400;
+                line-height: 22px;
+                transition: 0.4s all;
+            }
 
-.card-card .icon {
-    position: absolute;
-    z-index: 1;
-    opacity: 0.3;
-    height: 250px;
-}
+            .icon-circle-card {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                background: #e5f6eb;
+            }
+
+            .card-card:hover {
+                background: #23c55e;
+                transition: 0.4s all;
+            }
+
+            .card-card:hover .title-card,
+            .card-card:hover .subtitle-card {
+                color: #fff;
+                transition: 0.4s all;
+            }
+
+            .btnRound-card {
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                height: 30px;
+                padding: 6px 28px;
+                border-radius: 100px;
+                border: 1px solid #23c55e;
+                background: #fff;
+                transition: all 0.2s ease;
+            }
+
+            .btnRound-card:hover {
+                box-shadow: 0px 0.5rem 5px #1a8f45;
+                transition: all 0.2s ease;
+            }

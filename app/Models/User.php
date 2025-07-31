@@ -20,6 +20,7 @@ class User extends Authenticatable
     protected $fillable = [
         'employee_number',
         'name',
+        'user_type_id',
         'email',
         'password',
     ];
@@ -45,5 +46,9 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+    public function userType()
+    {
+        return $this->belongsTo(UserType::class);
     }
 }

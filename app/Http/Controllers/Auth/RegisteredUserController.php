@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\UserType;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -19,7 +20,9 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        $userTypes = UserType::all();
+
+        return view('auth.register', compact('userTypes'));
     }
 
     /**
@@ -32,6 +35,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'employee_number' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'name' => ['required', 'string', 'max:255'],
+            'user_type_id' => ['required'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -39,6 +43,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'employee_number' => $request->employee_number,
             'name' => $request->name,
+            'user_type_id' => $request->user_type_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
@@ -50,3 +55,4 @@ class RegisteredUserController extends Controller
         return redirect(route('dashboard', absolute: false));
     }
 }
+ 

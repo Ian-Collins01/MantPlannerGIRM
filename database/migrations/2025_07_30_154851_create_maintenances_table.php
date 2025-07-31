@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->unsignedBigInteger('machine_id');
             $table->foreign('machine_id')->references('id')->on('machines');
-            $table->unsignedBigInteger('technician_id');
+            $table->unsignedBigInteger('technician_id')->nullable();
             $table->foreign('technician_id')->references('id')->on('users');
             $table->unsignedBigInteger('maintenance_type');
             $table->foreign('maintenance_type')->references('id')->on('maintenance_types');

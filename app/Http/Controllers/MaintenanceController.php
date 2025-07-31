@@ -103,7 +103,7 @@ class MaintenanceController extends Controller
                 $responseTime = ($noticeHour && $startHour) ? $noticeHour->diffInMinutes($startHour) : null;
                 $maintenanceTime = ($startHour && $endHour) ? $startHour->diffInMinutes($endHour) : null;
 
-                $statusNewId = Status::where('description','Nuevo')->value('id');
+                $statusNewId = Status::where('description', 'Nuevo')->value('id');
 
                 $maintenance = Maintenance::create([
                     'date' => $date->toDateString(),
@@ -164,8 +164,9 @@ class MaintenanceController extends Controller
             return $task->header->name ?? 'Sin encabezado';
         });
 
+        $badgeColor = Status::badgeColor($maintenance->status->id);
 
-        return view('maintenances.show', compact('maintenance', 'groupedTasks'));
+        return view('maintenances.show', compact('maintenance', 'groupedTasks','badgeColor'));
     }
 
 

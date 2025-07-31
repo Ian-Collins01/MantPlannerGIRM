@@ -24,7 +24,7 @@
 
                         <div class="col-md-4 mb-2">
                             <label class="form-label">Fecha</label>
-                            <input type="date" name="date" class="form-control" value="{{ old('date') }}"
+                            <input type="date" name="date" class="form-control" value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}"
                                 required>
                         </div>
                     </div>

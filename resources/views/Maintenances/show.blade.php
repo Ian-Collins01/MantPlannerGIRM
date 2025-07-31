@@ -2,7 +2,11 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Detalle de Mantenimiento #') }}{{ $maintenance->id }}
+                {{ __('Detalle de Mantenimiento #') }}{{ $maintenance->id }} 
+
+                <span class="badge {{$badgeColor}}">
+                    {{$maintenance->status->description}}
+                </span>
             </h2>
             <div>
                 <a href="{{ route('maintenances.edit', $maintenance) }}">
@@ -78,7 +82,7 @@
 
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Técnico</label>
-                                <input type="text" class="form-control" value="{{ $maintenance->technician->name }}"
+                                <input type="text" class="form-control" value="{{ $maintenance->technician->name?? '-- No Asignado --' }}"
                                     disabled>
                             </div>
 

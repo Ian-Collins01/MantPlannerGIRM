@@ -49,7 +49,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6 mb-2">
+                        <div class="col mb-2">
                             <label class="form-label">Máquina</label>
                             <select name="machine_id" class="form-select select2" required>
                                 <option value="" disabled selected>-- Selecciona --</option>
@@ -62,14 +62,27 @@
                             </select>
                         </div>
 
-                        <div class="col-md-6 mb-2">
+                        <div class="col mb-2">
                             <label class="form-label">Técnico</label>
-                            <select name="technician_id" class="form-select select2" required>
+                            <select name="technician_id" class="form-select select2">
                                 <option value="" disabled selected>-- Selecciona --</option>
                                 @foreach ($technicians as $tech)
                                     <option value="{{ $tech->id }}"
                                         {{ old('technician_id') == $tech->id ? 'selected' : '' }}>
                                         {{ $tech->name }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col mb-2">
+                            <label class="form-label">Aplicante</label>
+                            <select name="applicant_id" class="form-select select2">
+                                <option value="" disabled selected>-- Selecciona --</option>
+                                @foreach ($applicants as $applicant)
+                                    <option value="{{ $applicant->id }}"
+                                        {{ old('applicant_id') == $applicant->id ? 'selected' : '' }}>
+                                        {{ $applicant->name }}
                                     </option>
                                 @endforeach
                             </select>

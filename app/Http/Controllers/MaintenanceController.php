@@ -10,7 +10,9 @@ use App\Models\TaskHeader;
 use App\Models\MaintenanceType;
 use App\Models\Status;
 use App\Models\User;
+use App\Models\UserType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -32,6 +34,10 @@ class MaintenanceController extends Controller
             $query->whereIn('maintenance_type', $request->maintenance_type_ids);
         }
 
+        if(Auth::user()->userType->name === 'Comun'){
+            $query->where('applicant_id',Auth::user()->id);
+        }
+
         $maintenances = $query->orderBy('date')->get();
         $maintenanceTypes = MaintenanceType::all();
 
@@ -43,12 +49,15 @@ class MaintenanceController extends Controller
      */
     public function create()
     {
+        $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
+
         $machines = Machine::all();
-        $technicians = User::all();
+        $technicians = User::where('user_type_id', '<>', $comunUserTypeId)->get();
+        $applicants = User::where('user_type_id', $comunUserTypeId)->get();
         $types = MaintenanceType::all();
         $taskHeaders = TaskHeader::all();
 
-        return view('maintenances.create', compact('machines', 'technicians', 'types', 'taskHeaders'));
+        return view('maintenances.create', compact('machines', 'technicians', 'applicants', 'types', 'taskHeaders'));
     }
 
     /**
@@ -62,11 +71,12 @@ class MaintenanceController extends Controller
             'start_hour' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
-            'has_stoppage' => 'required|boolean',
+            'has_stoppage' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
-            'technician_id' => 'required|exists:users,id',
+            'technician_id' => 'nullable|exists:users,id',
+            'applicant_id' => 'nullable|exists:users,id',
             'maintenance_type' => 'required|exists:maintenance_types,id',
-            'task_header_id' => 'required|array',
+            'task_header_id' => 'nullable|array',
             'task_header_id.*' => 'exists:task_headers,id',
             'repeat_interval' => 'nullable|in:monthly,semiannually,annually',
         ]);
@@ -79,8 +89,6 @@ class MaintenanceController extends Controller
                 'semiannually' => 2,
                 default => 1,
             };
-
-            $taskHeaders = TaskHeader::with('tasks')->whereIn('id', $validated['task_header_id'])->get();
 
             $createdMaintenances = [];
 
@@ -96,9 +104,12 @@ class MaintenanceController extends Controller
                     $date->addDay(); // Mueve al siguiente día hábil
                 }
 
-                $noticeHour = $validated['notice_hour'] ? Carbon::parse($validated['notice_hour']) : null;
-                $startHour = $validated['start_hour'] ? Carbon::parse($validated['start_hour']) : null;
-                $endHour = $validated['end_hour'] ? Carbon::parse($validated['end_hour']) : null;
+                $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
+                $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
+                $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
+                $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
+                $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
+                $applicantId = isset($validated['applicant_id']) ? $validated['applicant_id'] : null;
 
                 $responseTime = ($noticeHour && $startHour) ? $noticeHour->diffInMinutes($startHour) : null;
                 $maintenanceTime = ($startHour && $endHour) ? $startHour->diffInMinutes($endHour) : null;
@@ -113,21 +124,26 @@ class MaintenanceController extends Controller
                     'response_time' => $responseTime,
                     'maintenance_time' => $maintenanceTime,
                     'description' => $validated['description'],
-                    'has_stoppage' => $validated['has_stoppage'],
+                    'has_stoppage' => $hasStoppage,
                     'machine_id' => $validated['machine_id'],
-                    'technician_id' => $validated['technician_id'],
+                    'technician_id' => $technicianId,
+                    'applicant_id' => $applicantId,
                     'maintenance_type' => $validated['maintenance_type'],
                     'status_id' => $statusNewId,
                 ]);
 
-                foreach ($taskHeaders as $taskHeader) {
-                    foreach ($taskHeader->tasks as $task) {
-                        $maintenance->maintenanceTasks()->create([
-                            'task_description' => $task->description,
-                            'completed' => false,
-                            'notes' => null,
-                            'task_header_id' => $taskHeader->id,
-                        ]);
+                if (isset($validated['task_header_id'])) {
+                    $taskHeaders = TaskHeader::with('tasks')->whereIn('id', $validated['task_header_id'])->get();
+
+                    foreach ($taskHeaders as $taskHeader) {
+                        foreach ($taskHeader->tasks as $task) {
+                            $maintenance->maintenanceTasks()->create([
+                                'task_description' => $task->description,
+                                'completed' => false,
+                                'notes' => null,
+                                'task_header_id' => $taskHeader->id,
+                            ]);
+                        }
                     }
                 }
 
@@ -154,6 +170,7 @@ class MaintenanceController extends Controller
         $maintenance->load([
             'machine.area',
             'technician',
+            'applicant',
             'maintenanceType',
             'maintenanceTasks' => function ($query) {
                 $query->with('header');
@@ -166,7 +183,7 @@ class MaintenanceController extends Controller
 
         $badgeColor = Status::badgeColor($maintenance->status->id);
 
-        return view('maintenances.show', compact('maintenance', 'groupedTasks','badgeColor'));
+        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor'));
     }
 
 
@@ -191,8 +208,11 @@ class MaintenanceController extends Controller
      */
     public function edit(Maintenance $maintenance)
     {
+        $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
+
         $machines = Machine::all();
-        $technicians = User::all();
+        $technicians = User::where('user_type_id', '<>', $comunUserTypeId)->get();
+        $applicants = User::where('user_type_id', $comunUserTypeId)->get();
         $types = MaintenanceType::all();
         $taskHeaders = TaskHeader::all();
 
@@ -205,7 +225,7 @@ class MaintenanceController extends Controller
             ->toArray();
 
 
-        return view('maintenances.edit', compact('maintenance', 'machines', 'technicians', 'types', 'taskHeaders', 'selectedTaskHeaders'));
+        return view('maintenances.edit', compact('maintenance', 'machines', 'technicians', 'applicants', 'types', 'taskHeaders', 'selectedTaskHeaders'));
     }
 
 
@@ -222,9 +242,10 @@ class MaintenanceController extends Controller
             'description' => 'required|string',
             'has_stoppage' => 'required|boolean',
             'machine_id' => 'required|exists:machines,id',
-            'technician_id' => 'required|exists:users,id',
+            'technician_id' => 'nullable|exists:users,id',
+            'applicant_id' => 'nullable|exists:users,id',
             'maintenance_type' => 'required|exists:maintenance_types,id',
-            'task_header_id' => 'required|array',
+            'task_header_id' => 'nullable|array',
             'task_header_id.*' => 'exists:task_headers,id',
         ]);
 
@@ -234,6 +255,8 @@ class MaintenanceController extends Controller
             $noticeHour = $validated['notice_hour'] ? Carbon::parse($validated['notice_hour']) : null;
             $startHour = $validated['start_hour'] ? Carbon::parse($validated['start_hour']) : null;
             $endHour = $validated['end_hour'] ? Carbon::parse($validated['end_hour']) : null;
+            $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
+            $applicantId = isset($validated['applicant_id']) ? $validated['applicant_id'] : null;
 
             $responseTime = ($noticeHour && $startHour) ? $noticeHour->diffInMinutes($startHour) : null;
             $maintenanceTime = ($startHour && $endHour) ? $startHour->diffInMinutes($endHour) : null;
@@ -249,14 +272,15 @@ class MaintenanceController extends Controller
                 'description' => $validated['description'],
                 'has_stoppage' => $validated['has_stoppage'],
                 'machine_id' => $validated['machine_id'],
-                'technician_id' => $validated['technician_id'],
+                'technician_id' => $technicianId,
+                'applicant_id' => $applicantId,
                 'maintenance_type' => $validated['maintenance_type'],
             ]);
 
             // Obtener los task_header_ids actuales en maintenanceTasks
             $currentHeaderIds = $maintenance->maintenanceTasks()->pluck('task_header_id')->unique()->filter()->values()->toArray();
 
-            $newHeaderIds = collect($validated['task_header_id'])->unique()->values()->toArray();
+            $newHeaderIds = isset($validated['task_header_id']) ? collect($validated['task_header_id'])->unique()->values()->toArray() : [];
 
             // Detectar qué headers se agregaron y cuáles se eliminaron
             $toRemove = array_diff($currentHeaderIds, $newHeaderIds);
@@ -330,5 +354,15 @@ class MaintenanceController extends Controller
             'currentDate' => $date,
             'maintenances' => $maintenances,
         ]);
+    }
+
+    public function ticket()
+    {
+        $machines = Machine::all();
+        $technicians = User::all();
+        $types = MaintenanceType::all();
+        $taskHeaders = TaskHeader::all();
+
+        return view('maintenances.ticket', compact('machines', 'technicians', 'types', 'taskHeaders'));
     }
 }

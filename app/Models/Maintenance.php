@@ -17,6 +17,7 @@ class Maintenance extends Model
         'has_stoppage',
         'machine_id',
         'technician_id',
+        'applicant_id',
         'maintenance_type',
         'status_id',
     ];
@@ -27,6 +28,10 @@ class Maintenance extends Model
     public function technician()
     {
         return $this->belongsTo(User::class, 'technician_id');
+    }
+    public function applicant()
+    {
+        return $this->belongsTo(User::class, 'applicant_id');
     }
     public function maintenanceType()
     {

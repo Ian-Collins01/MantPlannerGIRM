@@ -24,7 +24,7 @@
                         <div class="subtitle-card">
                         </div>
                         <div class="d-flex justify-around">
-                            <a href="{{ route('maintenances.create') }}">
+                            <a href="{{ route(Auth::user()->userType->name === 'Comun' ? 'maintenances.ticket': 'maintenances.create') }}">
                                 <div class="btnRound-card btnService-card">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
                                         height="18" width="19">

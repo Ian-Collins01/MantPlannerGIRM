@@ -23,6 +23,10 @@ Route::get('/maintenances/calendar/{year?}/{month?}', [MaintenanceController::cl
     ->middleware(['auth', 'verified'])
     ->name('maintenances.calendar');
 
+Route::get('/maintenances/ticket', [MaintenanceController::class, 'ticket'])
+    ->middleware(['auth', 'verified'])
+    ->name('maintenances.ticket');
+
 Route::resource('maintenances', MaintenanceController::class)->middleware(['auth', 'verified']);
 
 Route::patch('/maintenances/{maintenance}/tasks/{task}', [MaintenanceController::class, 'updateTask'])

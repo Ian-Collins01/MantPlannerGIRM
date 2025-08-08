@@ -5,7 +5,8 @@
                 {{ __('Mantenimientos') }}
             </h2>
             <div>
-                <a href="{{ route('maintenances.create') }}">
+                <a
+                    href="{{ route(Auth::user()->userType->name === 'Comun' ? 'maintenances.ticket' : 'maintenances.create') }}">
                     <x-primary-button>Crear Mantenimiento</x-primary-button>
                 </a>
             </div>
@@ -78,12 +79,12 @@
                 </thead>
                 <tbody>
                     @forelse ($maintenances as $maintenance)
-                        <tr onclick="window.location='{{ route('maintenances.show',$maintenance) }}';"
+                        <tr onclick="window.location='{{ route('maintenances.show', $maintenance) }}';"
                             style="cursor: pointer;">
                             <td>{{ \Carbon\Carbon::parse($maintenance->date)->format('d/m/Y') }}</td>
                             <td>{{ $maintenance->description }}</td>
                             <td>{{ $maintenance->machine->name ?? 'Sin máquina' }}</td>
-                            <td>{{ $maintenance->technician->name ?? 'Sin técnico' }}</td>
+                            <td>{{ $maintenance->technician->name ?? '-- No asignado --' }}</td>
                             <td>{{ $maintenance->maintenanceType->name ?? 'Sin tipo' }}</td>
                         </tr>
                     @empty
@@ -99,4 +100,5 @@
             </table>
         </div>
     </div>
+    
 </x-app-layout>

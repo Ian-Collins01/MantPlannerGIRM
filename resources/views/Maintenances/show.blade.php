@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Detalle de Mantenimiento #') }}{{ $maintenance->id }} 
+                {{ __('Detalle de Mantenimiento #') }}{{ $maintenance->id }}
 
-                <span class="badge {{$badgeColor}}">
-                    {{$maintenance->status->description}}
+                <span class="badge {{ $badgeColor }}">
+                    {{ $maintenance->status->description }}
                 </span>
             </h2>
             <div>
@@ -19,7 +19,7 @@
 
     <div class="container mt-4">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col">
 
                 <div class="card mb-2">
                     <div class="card-header text-bg-dark fw-bold">
@@ -74,16 +74,22 @@
                         </div>
 
                         <div class="row">
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <label class="form-label">Máquina</label>
                                 <input type="text" class="form-control" value="{{ $maintenance->machine->name }}"
                                     disabled>
                             </div>
 
-                            <div class="col-md-6 mb-2">
+                            <div class="col-md-4 mb-2">
                                 <label class="form-label">Técnico</label>
-                                <input type="text" class="form-control" value="{{ $maintenance->technician->name?? '-- No Asignado --' }}"
-                                    disabled>
+                                <input type="text" class="form-control"
+                                    value="{{ $maintenance->technician->name ?? '-- No Asignado --' }}" disabled>
+                            </div>
+
+                            <div class="col-md-4 mb-2">
+                                <label class="form-label">Aplicante</label>
+                                <input type="text" class="form-control"
+                                    value="{{ $maintenance->applicant->name ?? '-- No Definido --' }}" disabled>
                             </div>
 
                             <div class="col-md-6 mb-2">
@@ -124,39 +130,42 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        Actividades del Mantenimiento
-                    </div>
-                    <div class="card-body p-0">
-                        @foreach ($groupedTasks as $headerName => $tasks)
-                            <div class="border-bottom px-3 py-2 bg-light fw-bold">
-                                {{ $headerName }}
-                            </div>
-                            <table class="table table-bordered table-sm mb-0">
-                                <tbody>
-                                    @foreach ($tasks as $task)
-                                        <tr>
-                                            <td class="text-center">
-                                                <input type="checkbox" class="form-check-input toggle-task"
-                                                    data-task-id="{{ $task->id }}"
-                                                    {{ $task->completed ? 'checked' : '' }}>
-                                            </td>
-                                            <td>{{ $task->task_description }}</td>
-                                            <td>
-                                                <input type="text" class="form-control form-control-sm note-input"
-                                                    value="{{ $task->notes }}" data-task-id="{{ $task->id }}"
-                                                    id="note_{{ $task->id }}" placeholder="-- Notas --">
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        @endforeach
+            @if (Auth::user()->userType->name != 'Comun')
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Actividades del Mantenimiento
+                        </div>
+                        <div class="card-body p-0">
+                            @foreach ($groupedTasks as $headerName => $tasks)
+                                <div class="border-bottom px-3 py-2 bg-light fw-bold">
+                                    {{ $headerName }}
+                                </div>
+                                <table class="table table-bordered table-sm mb-0">
+                                    <tbody>
+                                        @foreach ($tasks as $task)
+                                            <tr>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input toggle-task"
+                                                        data-task-id="{{ $task->id }}"
+                                                        {{ $task->completed ? 'checked' : '' }}>
+                                                </td>
+                                                <td>{{ $task->task_description }}</td>
+                                                <td>
+                                                    <input type="text"
+                                                        class="form-control form-control-sm note-input"
+                                                        value="{{ $task->notes }}" data-task-id="{{ $task->id }}"
+                                                        id="note_{{ $task->id }}" placeholder="-- Notas --">
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </div>
+            @endif
 
         </div>
     </div>

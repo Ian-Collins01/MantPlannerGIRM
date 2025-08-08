@@ -48,7 +48,7 @@
                                         <a href="{{ route('maintenances.show', $maintenance) }}">
                                             <div class="badge bg-secondary d-block text-start mt-1">
                                                 {{ $maintenance->machine->name }}<br>
-                                                <small>{{ $maintenance->technician->name }}</small>
+                                                <small>{{ $maintenance->technician->name ?? '-- No Asignado --' }}</small>
                                             </div>
                                         </a>
                                     @endforeach

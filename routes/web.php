@@ -27,6 +27,10 @@ Route::get('/maintenances/ticket', [MaintenanceController::class, 'ticket'])
     ->middleware(['auth', 'verified'])
     ->name('maintenances.ticket');
 
+Route::get('/maintenances/ticket/{maintenance}', [MaintenanceController::class, 'editTicket'])
+    ->middleware(['auth', 'verified'])
+    ->name('maintenances.edit_ticket');
+
 Route::resource('maintenances', MaintenanceController::class)->middleware(['auth', 'verified']);
 
 Route::patch('/maintenances/{maintenance}/tasks/{task}', [MaintenanceController::class, 'updateTask'])

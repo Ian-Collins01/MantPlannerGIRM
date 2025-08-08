@@ -34,8 +34,8 @@ class MaintenanceController extends Controller
             $query->whereIn('maintenance_type', $request->maintenance_type_ids);
         }
 
-        if(Auth::user()->userType->name === 'Comun'){
-            $query->where('applicant_id',Auth::user()->id);
+        if (Auth::user()->userType->name === 'Comun') {
+            $query->where('applicant_id', Auth::user()->id);
         }
 
         $maintenances = $query->orderBy('date')->get();
@@ -240,7 +240,7 @@ class MaintenanceController extends Controller
             'start_hour' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
-            'has_stoppage' => 'required|boolean',
+            'has_stoppage' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
             'technician_id' => 'nullable|exists:users,id',
             'applicant_id' => 'nullable|exists:users,id',
@@ -252,9 +252,10 @@ class MaintenanceController extends Controller
         try {
             DB::beginTransaction();
 
-            $noticeHour = $validated['notice_hour'] ? Carbon::parse($validated['notice_hour']) : null;
-            $startHour = $validated['start_hour'] ? Carbon::parse($validated['start_hour']) : null;
-            $endHour = $validated['end_hour'] ? Carbon::parse($validated['end_hour']) : null;
+            $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
+            $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
+            $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
+            $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
             $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
             $applicantId = isset($validated['applicant_id']) ? $validated['applicant_id'] : null;
 
@@ -270,39 +271,41 @@ class MaintenanceController extends Controller
                 'response_time' => $responseTime,
                 'maintenance_time' => $maintenanceTime,
                 'description' => $validated['description'],
-                'has_stoppage' => $validated['has_stoppage'],
+                'has_stoppage' => $hasStoppage,
                 'machine_id' => $validated['machine_id'],
                 'technician_id' => $technicianId,
                 'applicant_id' => $applicantId,
                 'maintenance_type' => $validated['maintenance_type'],
             ]);
 
-            // Obtener los task_header_ids actuales en maintenanceTasks
-            $currentHeaderIds = $maintenance->maintenanceTasks()->pluck('task_header_id')->unique()->filter()->values()->toArray();
+            if (Auth::user()->userType->name != 'Comun') {
+                // Obtener los task_header_ids actuales en maintenanceTasks
+                $currentHeaderIds = $maintenance->maintenanceTasks()->pluck('task_header_id')->unique()->filter()->values()->toArray();
 
-            $newHeaderIds = isset($validated['task_header_id']) ? collect($validated['task_header_id'])->unique()->values()->toArray() : [];
+                $newHeaderIds = isset($validated['task_header_id']) ? collect($validated['task_header_id'])->unique()->values()->toArray() : [];
 
-            // Detectar qué headers se agregaron y cuáles se eliminaron
-            $toRemove = array_diff($currentHeaderIds, $newHeaderIds);
-            $toAdd = array_diff($newHeaderIds, $currentHeaderIds);
+                // Detectar qué headers se agregaron y cuáles se eliminaron
+                $toRemove = array_diff($currentHeaderIds, $newHeaderIds);
+                $toAdd = array_diff($newHeaderIds, $currentHeaderIds);
 
-            // Eliminar tareas cuyo task_header_id ya no está en la selección
-            if (count($toRemove) > 0) {
-                $maintenance->maintenanceTasks()->whereIn('task_header_id', $toRemove)->delete();
-            }
+                // Eliminar tareas cuyo task_header_id ya no está en la selección
+                if (count($toRemove) > 0) {
+                    $maintenance->maintenanceTasks()->whereIn('task_header_id', $toRemove)->delete();
+                }
 
-            // Agregar tareas nuevas para los task_header_id nuevos
-            if (count($toAdd) > 0) {
-                $taskHeadersToAdd = TaskHeader::with('tasks')->whereIn('id', $toAdd)->get();
+                // Agregar tareas nuevas para los task_header_id nuevos
+                if (count($toAdd) > 0) {
+                    $taskHeadersToAdd = TaskHeader::with('tasks')->whereIn('id', $toAdd)->get();
 
-                foreach ($taskHeadersToAdd as $taskHeader) {
-                    foreach ($taskHeader->tasks as $task) {
-                        $maintenance->maintenanceTasks()->create([
-                            'task_description' => $task->description,
-                            'completed' => false,
-                            'notes' => null,
-                            'task_header_id' => $taskHeader->id,
-                        ]);
+                    foreach ($taskHeadersToAdd as $taskHeader) {
+                        foreach ($taskHeader->tasks as $task) {
+                            $maintenance->maintenanceTasks()->create([
+                                'task_description' => $task->description,
+                                'completed' => false,
+                                'notes' => null,
+                                'task_header_id' => $taskHeader->id,
+                            ]);
+                        }
                     }
                 }
             }
@@ -364,5 +367,12 @@ class MaintenanceController extends Controller
         $taskHeaders = TaskHeader::all();
 
         return view('maintenances.ticket', compact('machines', 'technicians', 'types', 'taskHeaders'));
+    }
+
+    public function editTicket(Maintenance $maintenance)
+    {
+        $machines = Machine::all();
+
+        return view('Maintenances.edit_ticket', compact('maintenance', 'machines'));
     }
 }

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->date('date');
             $table->time('notice_hour')->nullable();
             $table->time('start_hour')->nullable();
+            $table->time('lead_time')->nullable();
             $table->time('end_hour')->nullable();
             $table->float('response_time')->nullable();
             $table->float('maintenance_time')->nullable();

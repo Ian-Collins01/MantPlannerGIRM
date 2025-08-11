@@ -32,6 +32,13 @@
                     <div class="card-body">
                         <div class="row d-flex justify-end">
                             <div class="col-md-4 mb-2">
+                                <label class="form-label">Hora Entrega</label>
+                                <input type="text" class="form-control"
+                                    value="{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('H:i') : '---' }}"
+                                    disabled>
+                            </div>
+
+                            <div class="col-md-4 mb-2">
                                 <label class="form-label">Fecha</label>
                                 <input type="text" class="form-control"
                                     value="{{ \Carbon\Carbon::parse($maintenance->date)->format('d/m/Y') }}" disabled>

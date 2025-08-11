@@ -69,6 +69,7 @@ class MaintenanceController extends Controller
             'date' => 'required|date',
             'notice_hour' => 'nullable|date_format:H:i',
             'start_hour' => 'nullable|date_format:H:i',
+            'lead_time' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
             'has_stoppage' => 'nullable|boolean',
@@ -106,6 +107,7 @@ class MaintenanceController extends Controller
 
                 $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
                 $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
+                $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
                 $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
                 $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
                 $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
@@ -120,6 +122,7 @@ class MaintenanceController extends Controller
                     'date' => $date->toDateString(),
                     'notice_hour' => $validated['notice_hour'] ?? null,
                     'start_hour' => $validated['start_hour'] ?? null,
+                    'lead_time' => $leadTime,
                     'end_hour' => $validated['end_hour'] ?? null,
                     'response_time' => $responseTime,
                     'maintenance_time' => $maintenanceTime,
@@ -238,6 +241,7 @@ class MaintenanceController extends Controller
             'date' => 'required|date',
             'notice_hour' => 'nullable|date_format:H:i',
             'start_hour' => 'nullable|date_format:H:i',
+            'lead_time' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
             'has_stoppage' => 'nullable|boolean',
@@ -254,6 +258,7 @@ class MaintenanceController extends Controller
 
             $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
             $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
+            $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
             $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
             $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
             $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
@@ -267,6 +272,7 @@ class MaintenanceController extends Controller
                 'date' => $validated['date'],
                 'notice_hour' => $validated['notice_hour'] ?? null,
                 'start_hour' => $validated['start_hour'] ?? null,
+                'lead_time' => $leadTime,
                 'end_hour' => $validated['end_hour'] ?? null,
                 'response_time' => $responseTime,
                 'maintenance_time' => $maintenanceTime,

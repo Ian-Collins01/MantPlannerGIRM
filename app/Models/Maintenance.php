@@ -11,6 +11,7 @@ class Maintenance extends Model
         'notice_hour',
         'start_hour',
         'end_hour',
+        'lead_time',
         'response_time',
         'maintenance_time',
         'description',

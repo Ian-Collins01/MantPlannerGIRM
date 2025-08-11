@@ -11,6 +11,8 @@ use App\Models\MaintenanceType;
 use App\Models\Status;
 use App\Models\User;
 use App\Models\UserType;
+use App\Notifications\MaintenanceAssigned;
+use App\Notifications\MaintenanceCreated;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -51,7 +53,7 @@ class MaintenanceController extends Controller
     {
         $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
 
-        $machines = Machine::all();
+        $machines = Machine::all()->groupBy('area.name');
         $technicians = User::where('user_type_id', '<>', $comunUserTypeId)->get();
         $applicants = User::where('user_type_id', $comunUserTypeId)->get();
         $types = MaintenanceType::all();
@@ -153,6 +155,16 @@ class MaintenanceController extends Controller
                 $createdMaintenances[] = $maintenance;
             }
 
+            //Enviar correo de Mantenimiento asignado
+            if ($maintenance->technician && $maintenance->technician->email) {
+                $maintenance->technician->notify(new MaintenanceAssigned($maintenance));
+            } else {
+                foreach (User::all() as $user) {
+                    if ($user->userType->name === 'Admin') {
+                        $user->notify(new MaintenanceCreated($maintenance));
+                    }
+                }
+            }
 
             DB::commit();
 
@@ -213,7 +225,7 @@ class MaintenanceController extends Controller
     {
         $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
 
-        $machines = Machine::all();
+        $machines = Machine::all()->groupBy('area.name');
         $technicians = User::where('user_type_id', '<>', $comunUserTypeId)->get();
         $applicants = User::where('user_type_id', $comunUserTypeId)->get();
         $types = MaintenanceType::all();
@@ -267,6 +279,8 @@ class MaintenanceController extends Controller
             $responseTime = ($noticeHour && $startHour) ? $noticeHour->diffInMinutes($startHour) : null;
             $maintenanceTime = ($startHour && $endHour) ? $startHour->diffInMinutes($endHour) : null;
 
+            $oldTechnician = $maintenance->technician ?? null;
+
             // Actualizar datos del mantenimiento
             $maintenance->update([
                 'date' => $validated['date'],
@@ -314,6 +328,10 @@ class MaintenanceController extends Controller
                         }
                     }
                 }
+            }
+
+            if ($technicianId && !$oldTechnician || $technicianId && $oldTechnician->id != $technicianId) {
+                User::find($technicianId)->notify(new MaintenanceAssigned($maintenance));
             }
 
             DB::commit();
@@ -367,7 +385,7 @@ class MaintenanceController extends Controller
 
     public function ticket()
     {
-        $machines = Machine::all();
+        $machines = Machine::all()->groupBy('area.name');
         $technicians = User::all();
         $types = MaintenanceType::all();
         $taskHeaders = TaskHeader::all();
@@ -377,7 +395,7 @@ class MaintenanceController extends Controller
 
     public function editTicket(Maintenance $maintenance)
     {
-        $machines = Machine::all();
+        $machines = Machine::all()->groupBy('area.name');
 
         return view('Maintenances.edit_ticket', compact('maintenance', 'machines'));
     }

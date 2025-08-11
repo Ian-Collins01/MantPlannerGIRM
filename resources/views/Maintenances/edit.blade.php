@@ -77,11 +77,15 @@
                             <label class="form-label">Máquina</label>
                             <select name="machine_id" class="form-select select2" required>
                                 <option value="" disabled>-- Selecciona --</option>
-                                @foreach ($machines as $machine)
-                                    <option value="{{ $machine->id }}"
-                                        {{ old('machine_id', $maintenance->machine_id) == $machine->id ? 'selected' : '' }}>
-                                        {{ $machine->name }}
-                                    </option>
+                                @foreach ($machines as $area => $groupedMachines)
+                                    <optgroup label="{{ $area }}">
+                                        @foreach ($groupedMachines as $machine)
+                                            <option value="{{ $machine->id }}"
+                                                {{ old('machine_id', $maintenance->machine_id) == $machine->id ? 'selected' : '' }}>
+                                                {{ $machine->name }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                         </div>
@@ -155,7 +159,8 @@
                                     <label class="form-check-label">Sí</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="has_stoppage" value="0"
+                                    <input class="form-check-input" type="radio" name="has_stoppage"
+                                        value="0"
                                         {{ old('has_stoppage', $maintenance->has_stoppage) == 0 ? 'checked' : '' }}
                                         required>
                                     <label class="form-check-label">No</label>

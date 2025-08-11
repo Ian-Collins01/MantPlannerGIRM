@@ -24,8 +24,8 @@
 
                         <div class="col-md-4 mb-2">
                             <label class="form-label">Fecha</label>
-                            <input type="date" name="date" class="form-control" value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}"
-                                required>
+                            <input type="date" name="date" class="form-control"
+                                value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}" required>
                         </div>
                     </div>
 
@@ -44,8 +44,7 @@
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Entrega</label>
-                            <input type="time" name="lead_time" class="form-control"
-                                value="{{ old('lead_time') }}">
+                            <input type="time" name="lead_time" class="form-control" value="{{ old('lead_time') }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
@@ -59,11 +58,15 @@
                             <label class="form-label">Máquina</label>
                             <select name="machine_id" class="form-select select2" required>
                                 <option value="" disabled selected>-- Selecciona --</option>
-                                @foreach ($machines as $machine)
-                                    <option value="{{ $machine->id }}"
-                                        {{ old('machine_id') == $machine->id ? 'selected' : '' }}>
-                                        {{ $machine->name }}
-                                    </option>
+                                @foreach ($machines as $area => $groupedMachines)
+                                    <optgroup label="{{ $area }}">
+                                        @foreach ($groupedMachines as $machine)
+                                            <option value="{{ $machine->id }}"
+                                                {{ old('machine_id') == $machine->id ? 'selected' : '' }}>
+                                                {{ $machine->name }}
+                                            </option>
+                                        @endforeach
+                                    </optgroup>
                                 @endforeach
                             </select>
                         </div>

@@ -21,11 +21,15 @@
                         <label class="form-label">Máquina</label>
                         <select name="machine_id" class="form-select select2" required>
                             <option value="" disabled selected>-- Selecciona --</option>
-                            @foreach ($machines as $machine)
-                                <option value="{{ $machine->id }}"
-                                    {{ old('machine_id') == $machine->id ? 'selected' : '' }}>
-                                    {{ $machine->name }}
-                                </option>
+                            @foreach ($machines as $area => $groupedMachines)
+                                <optgroup label="{{ $area }}">
+                                    @foreach ($groupedMachines as $machine)
+                                        <option value="{{ $machine->id }}"
+                                            {{ old('machine_id') == $machine->id ? 'selected' : '' }}>
+                                            {{ $machine->name }}
+                                        </option>
+                                    @endforeach
+                                </optgroup>
                             @endforeach
                         </select>
                     </div>

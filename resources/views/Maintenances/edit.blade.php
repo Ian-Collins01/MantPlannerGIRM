@@ -153,15 +153,15 @@
                             <label class="form-label d-block">¿Hubo Paro?</label>
                             <div class="border rounded p-3 bg-light">
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="has_stoppage" value="1"
-                                        {{ old('has_stoppage', $maintenance->has_stoppage) == 1 ? 'checked' : '' }}
+                                    <input class="form-check-input" type="radio" name="has_stoppage_machine" value="1"
+                                        {{ old('has_stoppage_machine', $maintenance->has_stoppage_machine) == 1 ? 'checked' : '' }}
                                         required>
                                     <label class="form-check-label">Sí</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="has_stoppage"
+                                    <input class="form-check-input" type="radio" name="has_stoppage_machine"
                                         value="0"
-                                        {{ old('has_stoppage', $maintenance->has_stoppage) == 0 ? 'checked' : '' }}
+                                        {{ old('has_stoppage_machine', $maintenance->has_stoppage_machine) == 0 ? 'checked' : '' }}
                                         required>
                                     <label class="form-check-label">No</label>
                                 </div>

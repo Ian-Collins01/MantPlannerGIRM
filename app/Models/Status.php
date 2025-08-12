@@ -20,19 +20,19 @@ class Status extends Model
     {
         switch ($statusId) {
             case 1:
-                $badgeColor = 'text-bg-info';
+                $badgeColor = 'info';
                 break;
             case 2:
-                $badgeColor = 'text-bg-warning';
+                $badgeColor = 'warning';
                 break;
             case 3:
-                $badgeColor = 'text-bg-danger';
+                $badgeColor = 'danger';
                 break;
             case 4:
-                $badgeColor = 'text-bg-success';
+                $badgeColor = 'success';
                 break;
             default:
-                $badgeColor = 'text-bg-dark';
+                $badgeColor = 'dark';
                 break;
         }
         return $badgeColor;

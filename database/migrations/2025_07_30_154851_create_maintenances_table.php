@@ -18,10 +18,12 @@ return new class extends Migration
             $table->time('start_hour')->nullable();
             $table->time('lead_time')->nullable();
             $table->time('end_hour')->nullable();
+            $table->time('stoppage_start')->nullable();
+            $table->time('stoppage_end')->nullable();
             $table->float('response_time')->nullable();
             $table->float('maintenance_time')->nullable();
             $table->text('description');
-            $table->boolean('has_stoppage');
+            $table->boolean('has_stoppage_machine');
 
             $table->unsignedBigInteger('machine_id');
             $table->foreign('machine_id')->references('id')->on('machines');

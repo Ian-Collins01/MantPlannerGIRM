@@ -15,7 +15,7 @@ class Maintenance extends Model
         'response_time',
         'maintenance_time',
         'description',
-        'has_stoppage',
+        'has_stoppage_machine',
         'machine_id',
         'technician_id',
         'applicant_id',

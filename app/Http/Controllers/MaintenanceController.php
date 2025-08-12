@@ -74,7 +74,7 @@ class MaintenanceController extends Controller
             'lead_time' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
-            'has_stoppage' => 'nullable|boolean',
+            'has_stoppage_machine' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
             'technician_id' => 'nullable|exists:users,id',
             'applicant_id' => 'nullable|exists:users,id',
@@ -111,7 +111,7 @@ class MaintenanceController extends Controller
                 $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
                 $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
                 $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
-                $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
+                $hasStoppage = isset($validated['has_stoppage_machine']) ? $validated['has_stoppage_machine'] : 0;
                 $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
                 $applicantId = isset($validated['applicant_id']) ? $validated['applicant_id'] : null;
 
@@ -129,7 +129,7 @@ class MaintenanceController extends Controller
                     'response_time' => $responseTime,
                     'maintenance_time' => $maintenanceTime,
                     'description' => $validated['description'],
-                    'has_stoppage' => $hasStoppage,
+                    'has_stoppage_machine' => $hasStoppage,
                     'machine_id' => $validated['machine_id'],
                     'technician_id' => $technicianId,
                     'applicant_id' => $applicantId,
@@ -198,7 +198,10 @@ class MaintenanceController extends Controller
 
         $badgeColor = Status::badgeColor($maintenance->status->id);
 
-        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor'));
+        $enCursoStatus = Status::where('description', 'En Curso')->value('id');
+        $showTasks = $maintenance->status->id == $enCursoStatus;
+
+        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor', 'showTasks'));
     }
 
 
@@ -256,7 +259,7 @@ class MaintenanceController extends Controller
             'lead_time' => 'nullable|date_format:H:i',
             'end_hour' => 'nullable|date_format:H:i',
             'description' => 'required|string',
-            'has_stoppage' => 'nullable|boolean',
+            'has_stoppage_machine' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
             'technician_id' => 'nullable|exists:users,id',
             'applicant_id' => 'nullable|exists:users,id',
@@ -272,7 +275,7 @@ class MaintenanceController extends Controller
             $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
             $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
             $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
-            $hasStoppage = isset($validated['has_stoppage']) ? $validated['has_stoppage'] : 0;
+            $hasStoppage = isset($validated['has_stoppage_machine']) ? $validated['has_stoppage_machine'] : 0;
             $technicianId = isset($validated['technician_id']) ? $validated['technician_id'] : null;
             $applicantId = isset($validated['applicant_id']) ? $validated['applicant_id'] : null;
 
@@ -291,7 +294,7 @@ class MaintenanceController extends Controller
                 'response_time' => $responseTime,
                 'maintenance_time' => $maintenanceTime,
                 'description' => $validated['description'],
-                'has_stoppage' => $hasStoppage,
+                'has_stoppage_machine' => $hasStoppage,
                 'machine_id' => $validated['machine_id'],
                 'technician_id' => $technicianId,
                 'applicant_id' => $applicantId,
@@ -399,4 +402,73 @@ class MaintenanceController extends Controller
 
         return view('Maintenances.edit_ticket', compact('maintenance', 'machines'));
     }
+
+    public function updateStatus(Request $request, Maintenance $maintenance)
+    {
+        $request->validate([
+            'status_id' => 'required|exists:statuses,id',
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $now = Carbon::now();
+
+            // Establecer hora de inicio y de aviso si no existen
+            if (!$maintenance->start_hour) {
+                $maintenance->start_hour = $now;
+
+                if (!$maintenance->notice_hour) {
+                    $maintenance->notice_hour = $now;
+                }
+
+                $maintenance->response_time = round(
+                    Carbon::parse($maintenance->notice_hour)->diffInMinutes($maintenance->start_hour),
+                    2
+                );
+            }
+
+            // Cambios según el nuevo estado
+            switch ((int) $request->status_id) {
+                case 2: // En curso
+                    if ($maintenance->stoppage_start && !$maintenance->stoppage_end) {
+                        $maintenance->stoppage_end = $now;
+                    }
+                    break;
+
+                case 3: // Pendiente
+                    $maintenance->stoppage_start = $now;
+                    break;
+
+                case 4: // Cerrado
+                    $maintenance->end_hour = $now;
+
+                    if ($maintenance->stoppage_start && !$maintenance->stoppage_end) {
+                        $maintenance->stoppage_end = $now;
+                    }
+
+                    $stoppageTime = $maintenance->stoppage_start && $maintenance->stoppage_end
+                        ? round(Carbon::parse($maintenance->stoppage_start)->diffInMinutes($maintenance->stoppage_end), 2)
+                        : 0;
+
+                    $maintenance->maintenance_time = round(
+                        Carbon::parse($maintenance->start_hour)->diffInMinutes($maintenance->end_hour),
+                        2
+                    ) - $stoppageTime;
+                    break;
+            }
+
+            // Actualizar estado
+            $maintenance->status_id = $request->status_id;
+            $maintenance->save();
+
+            DB::commit();
+
+            return back()->with('success', 'Estado del mantenimiento actualizado.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors('Error al actualizar estado del mantenimiento: ' . $e->getMessage());
+        }
+    }
+
 }

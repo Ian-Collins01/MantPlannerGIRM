@@ -37,6 +37,11 @@ Route::patch('/maintenances/{maintenance}/tasks/{task}', [MaintenanceController:
     ->middleware(['auth', 'verified'])
     ->name('maintenances.updateTask');
 
+Route::patch('/maintenances/{maintenance}/status', [MaintenanceController::class, 'updateStatus'])
+    ->middleware(['auth', 'verified'])
+    ->name('maintenances.updateStatus');
+
+
 /******************************************************** TASKS ********************************************************/
 
 Route::resource('task-headers', TaskHeaderController::class)->middleware(['auth', 'verified']);

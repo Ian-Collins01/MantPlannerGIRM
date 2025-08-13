@@ -32,9 +32,9 @@
                     <div class="card-body">
                         <div class="row d-flex justify-end">
                             <div class="col-md-4 mb-2">
-                                <label class="form-label">Hora Entrega</label>
+                                <label class="form-label">Hora Aviso</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('H:i') : '---' }}"
+                                    value="{{ $maintenance->notice_hour ? \Carbon\Carbon::parse($maintenance->notice_hour)->format('H:i') : '---' }}"
                                     disabled>
                             </div>
 
@@ -47,16 +47,16 @@
 
                         <div class="row">
                             <div class="col-md-4 mb-2">
-                                <label class="form-label">Hora Aviso</label>
+                                <label class="form-label">Hora Inicio</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $maintenance->notice_hour ? \Carbon\Carbon::parse($maintenance->notice_hour)->format('H:i') : '---' }}"
+                                    value="{{ $maintenance->start_hour ? \Carbon\Carbon::parse($maintenance->start_hour)->format('H:i') : '---' }}"
                                     disabled>
                             </div>
 
                             <div class="col-md-4 mb-2">
-                                <label class="form-label">Hora Inicio</label>
+                                <label class="form-label">Entrega Estimada</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $maintenance->start_hour ? \Carbon\Carbon::parse($maintenance->start_hour)->format('H:i') : '---' }}"
+                                    value="{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('H:i') : '---' }}"
                                     disabled>
                             </div>
 
@@ -178,41 +178,41 @@
                         </div>
                     </div>
 
-                    @if ($showTasks)
-                        <div class="card">
-                            <div class="card-header bg-primary text-white">
-                                Actividades del Mantenimiento
-                            </div>
-                            <div class="card-body p-0">
-                                @foreach ($groupedTasks as $headerName => $tasks)
-                                    <div class="border-bottom px-3 py-2 bg-light fw-bold">
-                                        {{ $headerName }}
-                                    </div>
-                                    <table class="table table-bordered table-sm mb-0">
-                                        <tbody>
-                                            @foreach ($tasks as $task)
-                                                <tr>
-                                                    <td class="text-center">
-                                                        <input type="checkbox" class="form-check-input toggle-task"
-                                                            data-task-id="{{ $task->id }}"
-                                                            {{ $task->completed ? 'checked' : '' }}>
-                                                    </td>
-                                                    <td>{{ $task->task_description }}</td>
-                                                    <td>
-                                                        <input type="text"
-                                                            class="form-control form-control-sm note-input"
-                                                            value="{{ $task->notes }}"
-                                                            data-task-id="{{ $task->id }}"
-                                                            id="note_{{ $task->id }}" placeholder="-- Notas --">
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        </tbody>
-                                    </table>
-                                @endforeach
-                            </div>
+                    <div class="card">
+                        <div class="card-header bg-primary text-white">
+                            Actividades del Mantenimiento
                         </div>
-                    @endif
+                        <div class="card-body p-0">
+                            @foreach ($groupedTasks as $headerName => $tasks)
+                                <div class="border-bottom px-3 py-2 bg-light fw-bold">
+                                    {{ $headerName }}
+                                </div>
+                                <table class="table table-bordered table-sm mb-0">
+                                    <tbody>
+                                        @foreach ($tasks as $task)
+                                            <tr>
+                                                <td class="text-center">
+                                                    <input type="checkbox" class="form-check-input toggle-task"
+                                                        data-task-id="{{ $task->id }}"
+                                                        {{ $task->completed ? 'checked' : '' }}
+                                                        {{ $enableTasks }}>
+                                                </td>
+                                                <td>{{ $task->task_description }}</td>
+                                                <td>
+                                                    <input type="text"
+                                                        class="form-control form-control-sm note-input"
+                                                        value="{{ $task->notes }}"
+                                                        data-task-id="{{ $task->id }}"
+                                                        id="note_{{ $task->id }}" placeholder="-- Notas --"
+                                                        {{ $enableTasks }}>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                </table>
+                            @endforeach
+                        </div>
+                    </div>
                 </div>
             @endif
 

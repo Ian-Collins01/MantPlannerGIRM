@@ -12,6 +12,7 @@ use App\Models\Status;
 use App\Models\User;
 use App\Models\UserType;
 use App\Notifications\MaintenanceAssigned;
+use App\Notifications\MaintenanceCompleted;
 use App\Notifications\MaintenanceCreated;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -199,9 +200,9 @@ class MaintenanceController extends Controller
         $badgeColor = Status::badgeColor($maintenance->status->id);
 
         $enCursoStatus = Status::where('description', 'En Curso')->value('id');
-        $showTasks = $maintenance->status->id == $enCursoStatus;
+        $enableTasks = $maintenance->status->id != $enCursoStatus ? 'disabled' : null;
 
-        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor', 'showTasks'));
+        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor', 'enableTasks'));
     }
 
 
@@ -455,6 +456,10 @@ class MaintenanceController extends Controller
                         Carbon::parse($maintenance->start_hour)->diffInMinutes($maintenance->end_hour),
                         2
                     ) - $stoppageTime;
+
+                    if ($maintenance->applicant) {
+                        $maintenance->applicant->notify(new MaintenanceCompleted($maintenance));
+                    }
                     break;
             }
 

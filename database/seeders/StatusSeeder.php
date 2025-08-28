@@ -17,6 +17,7 @@ class StatusSeeder extends Seeder
             ['description' => 'Nuevo'],
             ['description' => 'En curso'],
             ['description' => 'Pendiente'],
+            ['description' => 'En aprobación'],
             ['description' => 'Cerrado'],
         ]);
     }

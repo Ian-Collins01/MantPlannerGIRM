@@ -29,6 +29,9 @@ class Status extends Model
                 $badgeColor = 'danger';
                 break;
             case 4:
+                $badgeColor = 'secondary';
+                break;
+            case 5:
                 $badgeColor = 'success';
                 break;
             default:

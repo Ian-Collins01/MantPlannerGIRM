@@ -22,6 +22,46 @@
     </x-slot>
 
     <div class="container mt-4">
+        @if ($maintenance->applicant_id == Auth::user()->id && $maintenance->status->description == 'En aprobación')
+            <div class="d-flex justify-center ">
+                <div class="card mb-3 col-md-6">
+                    <div class="card-header text-bg-dark fw-bold">
+                        Aprobación de Mantenimiento
+                    </div>
+                    <div class="card-body text-center">
+                        <p>Tu mantenimiento ha sido marcado como finalizado. Por favor, confirma si fue realizado de
+                            manera
+                            correcta.</p>
+                        <p>Si no estás satisfecho, notifícalo para que el técnico realice las correcciones necesarias.
+                        </p>
+                        <form method="POST" action="{{ route('maintenances.approval', $maintenance) }}"
+                            class="d-inline-block">
+                            @csrf
+                            @method('PATCH')
+                            <input type="hidden" name="approval_action" id="approval_action">
+
+                            <div class="mt-2">
+                                <button type="submit" class="btn btn-success me-2" onclick="setApproval('approve')">
+                                    Confirmar
+                                </button>
+
+                                <button type="submit" class="btn btn-danger" onclick="setApproval('reject')">
+                                    Rechazar
+                                </button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <script>
+                function setApproval(action) {
+                    document.getElementById('approval_action').value = action;
+                }
+            </script>
+        @endif
+
         <div class="row">
             <div class="col">
 
@@ -169,9 +209,9 @@
                             <form method="POST" action="{{ route('maintenances.updateStatus', $maintenance) }}">
                                 @csrf
                                 @method('PATCH')
-                                <input type="hidden" name="status_id" value="4">
+                                <input type="hidden" name="status_id" value="5">
                                 <button type="submit"
-                                    class="btn {{ $maintenance->status_id == 4 ? 'btn-success' : 'btn-outline-success' }}">
+                                    class="btn {{ $maintenance->status_id == 5 ? 'btn-success' : 'btn-outline-success' }}">
                                     Cerrado
                                 </button>
                             </form>
@@ -194,8 +234,7 @@
                                                 <td class="text-center">
                                                     <input type="checkbox" class="form-check-input toggle-task"
                                                         data-task-id="{{ $task->id }}"
-                                                        {{ $task->completed ? 'checked' : '' }}
-                                                        {{ $enableTasks }}>
+                                                        {{ $task->completed ? 'checked' : '' }} {{ $enableTasks }}>
                                                 </td>
                                                 <td>{{ $task->task_description }}</td>
                                                 <td>

@@ -8,7 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class MaintenanceCompleted extends Notification
+class MaintenanceRejected extends Notification
 {
     use Queueable;
 
@@ -27,12 +27,11 @@ class MaintenanceCompleted extends Notification
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Mantenimiento Finalizado')
-            ->greeting('Hola ' . $notifiable->name)
-            ->line('Su mantenimiento ha sido finalizado.')
+            ->subject('Mantenimiento Rechazado')
+            ->line('El mantenimiento realizado fue rechazado por el solicitante.')
             ->line('Máquina: ' . $this->maintenance->machine->name)
             ->line('Descripción: ' . $this->maintenance->description)
-            ->line('Por favor confirma que el mantenimeito ha ido efectivo y se ha entregado:')
-            ->action('Ver mantenimiento', route('maintenances.show', $this->maintenance));
+            ->action('Ver Detalles', url(route('maintenances.show', $this->maintenance->id)))
+            ->line('Por favor, revisa y realiza los ajustes necesarios.');
     }
 }

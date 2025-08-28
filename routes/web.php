@@ -41,6 +41,11 @@ Route::patch('/maintenances/{maintenance}/status', [MaintenanceController::class
     ->middleware(['auth', 'verified'])
     ->name('maintenances.updateStatus');
 
+Route::patch('/maintenances/{maintenance}/approval', [MaintenanceController::class, 'approval'])
+    ->middleware(['auth', 'verified'])
+    ->name('maintenances.approval');
+
+
 
 /******************************************************** TASKS ********************************************************/
 

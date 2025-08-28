@@ -14,6 +14,7 @@ use App\Models\UserType;
 use App\Notifications\MaintenanceAssigned;
 use App\Notifications\MaintenanceCompleted;
 use App\Notifications\MaintenanceCreated;
+use App\Notifications\MaintenanceRejected;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -441,7 +442,7 @@ class MaintenanceController extends Controller
                     $maintenance->stoppage_start = $now;
                     break;
 
-                case 4: // Cerrado
+                case 5: // Cerrado
                     $maintenance->end_hour = $now;
 
                     if ($maintenance->stoppage_start && !$maintenance->stoppage_end) {
@@ -463,8 +464,10 @@ class MaintenanceController extends Controller
                     break;
             }
 
+            $newStatusId = $request->status_id == 5 && $maintenance->applicant ? '4' : $request->status_id;
+
             // Actualizar estado
-            $maintenance->status_id = $request->status_id;
+            $maintenance->status_id = $newStatusId;
             $maintenance->save();
 
             DB::commit();
@@ -475,5 +478,37 @@ class MaintenanceController extends Controller
             return back()->withErrors('Error al actualizar estado del mantenimiento: ' . $e->getMessage());
         }
     }
+
+    public function approval(Request $request, Maintenance $maintenance)
+    {
+        $request->validate([
+            'approval_action' => 'required|in:approve,reject',
+        ]);
+
+        $cerradoStatusId = Status::where('description', 'Cerrado')->value('id');
+        $pendienteStatusId = Status::where('description', 'Pendiente')->value('id');
+
+        if ($request->approval_action === 'approve') {
+            // Si aprueba, cambia a estado final (cerrado)
+            $maintenance->update([
+                'status_id' => $cerradoStatusId, // Estado final aprobado
+            ]);
+
+            return back()->with('success', 'Has confirmado la finalización del mantenimiento.');
+        } else {
+            // Si rechaza, vuelve a estado Pendiente (2) y envía correo al técnico
+            $maintenance->update([
+                'status_id' => $pendienteStatusId, // Pendiente
+            ]);
+
+            // Enviar notificación al técnico
+            if ($maintenance->technician) {
+                $maintenance->technician->notify(new MaintenanceRejected($maintenance));
+            }
+
+            return back()->with('error', 'Has rechazado el mantenimiento. El técnico ha sido notificado.');
+        }
+    }
+
 
 }

@@ -17,6 +17,7 @@ class AreaSeeder extends Seeder
             ['name' => 'Mantenimiento de Exportación'],
             ['name' => 'Mantenimiento de Inyección'],
             ['name' => 'Mantenimiento General'],
+            ['name' => 'Ingeniería'],
         ]);
     }
 }

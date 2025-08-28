@@ -17,6 +17,7 @@ class MachineSeeder extends Seeder
         $inyeccionAreaId = Area::where('name', 'Mantenimiento de Inyección')->value('id');
         $exportAreaId = Area::where('name', 'Mantenimiento de Exportación')->value('id');
         $generalAreaId = Area::where('name', 'Mantenimiento General')->value('id');
+        $engineeringAreaId = Area::where('name', 'Ingeniería')->value('id');
 
         Machine::factory()->createMany([
             ['name' => 'ETC-1', 'area_id' => $exportAreaId],
@@ -103,6 +104,8 @@ class MachineSeeder extends Seeder
             ['name' => 'SISTEMA CONTRA INCENDIO', 'area_id' => $generalAreaId],
             ['name' => 'SUB ESTACION', 'area_id' => $generalAreaId],
             ['name' => 'LAMPARAS DE EMERGENCIA', 'area_id' => $generalAreaId],
+            ['name' => 'Sin máquina especifica', 'area_id' => $generalAreaId],
+            ['name' => 'Solicitud de Ingeniería', 'area_id' => $engineeringAreaId],
         ]);
     }
 }

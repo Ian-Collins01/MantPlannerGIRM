@@ -54,9 +54,10 @@ class MaintenanceController extends Controller
     public function create()
     {
         $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
+        $superadminUserTypeId = UserType::where('name', 'Superadmin')->value('id');
 
         $machines = Machine::all()->groupBy('area.name');
-        $technicians = User::where('user_type_id', '<>', $comunUserTypeId)->get();
+        $technicians = User::whereNotIn('user_type_id', [$comunUserTypeId, $superadminUserTypeId])->get();
         $applicants = User::where('user_type_id', $comunUserTypeId)->get();
         $types = MaintenanceType::all();
         $taskHeaders = TaskHeader::all();

@@ -49,26 +49,26 @@
                     <div class="row">
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Aviso</label>
-                            <input type="time" name="notice_hour" class="form-control"
-                                value="{{ old('notice_hour', $maintenance->notice_hour ? \Carbon\Carbon::parse($maintenance->notice_hour)->format('H:i') : null) }}">
+                            <input type="datetime-local" name="notice_hour" class="form-control"
+                                value="{{ old('notice_hour', $maintenance->notice_hour ? \Carbon\Carbon::parse($maintenance->notice_hour)->format('Y-m-d\TH:i') : null) }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Inicio</label>
-                            <input type="time" name="start_hour" class="form-control"
-                                value="{{ old('start_hour', $maintenance->start_hour ? \Carbon\Carbon::parse($maintenance->start_hour)->format('H:i') : null) }}">
+                            <input type="datetime-local" name="start_hour" class="form-control"
+                                value="{{ old('start_hour', $maintenance->start_hour ? \Carbon\Carbon::parse($maintenance->start_hour)->format('Y-m-d\TH:i') : null) }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Entrega</label>
-                            <input type="time" name="lead_time" class="form-control"
-                                value="{{ old('lead_time', $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('H:i') : null) }}">
+                            <input type="datetime-local" name="lead_time" class="form-control"
+                                value="{{ old('lead_time', $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('Y-m-d\TH:i') : null) }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Fin</label>
-                            <input type="time" name="end_hour" class="form-control"
-                                value="{{ old('end_hour', $maintenance->end_hour ? \Carbon\Carbon::parse($maintenance->end_hour)->format('H:i') : null) }}">
+                            <input type="datetime-local" name="end_hour" class="form-control"
+                                value="{{ old('end_hour', $maintenance->end_hour ? \Carbon\Carbon::parse($maintenance->end_hour)->format('Y-m-d\TH:i') : null) }}">
                         </div>
                     </div>
 

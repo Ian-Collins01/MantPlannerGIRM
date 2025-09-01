@@ -32,24 +32,24 @@
                     <div class="row">
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Aviso</label>
-                            <input type="time" name="notice_hour" class="form-control"
+                            <input type="datetime-local" name="notice_hour" class="form-control"
                                 value="{{ old('notice_hour') }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Inicio</label>
-                            <input type="time" name="start_hour" class="form-control"
+                            <input type="datetime-local" name="start_hour" class="form-control"
                                 value="{{ old('start_hour') }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Entrega</label>
-                            <input type="time" name="lead_time" class="form-control" value="{{ old('lead_time') }}">
+                            <input type="datetime-local" name="lead_time" class="form-control" value="{{ old('lead_time') }}">
                         </div>
 
                         <div class="col-md-3 mb-2">
                             <label class="form-label">Hora Fin</label>
-                            <input type="time" name="end_hour" class="form-control" value="{{ old('end_hour') }}">
+                            <input type="datetime-local" name="end_hour" class="form-control" value="{{ old('end_hour') }}">
                         </div>
                     </div>
 

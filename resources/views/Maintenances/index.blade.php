@@ -75,10 +75,15 @@
                         <th>Máquina</th>
                         <th>Técnico</th>
                         <th>Tipo de Mantenimiento</th>
+                        <th>Entrega Estimada</th>
+                        <th>Estado</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($maintenances as $maintenance)
+                        @php
+                            $badgeColor = \App\Models\Status::badgeColor($maintenance->status->id);
+                        @endphp
                         <tr onclick="window.location='{{ route('maintenances.show', $maintenance) }}';"
                             style="cursor: pointer;">
                             <td>{{ \Carbon\Carbon::parse($maintenance->date)->format('d/m/Y') }}</td>
@@ -86,6 +91,12 @@
                             <td>{{ $maintenance->machine->name ?? 'Sin máquina' }}</td>
                             <td>{{ $maintenance->technician->name ?? '-- No asignado --' }}</td>
                             <td>{{ $maintenance->maintenanceType->name ?? 'Sin tipo' }}</td>
+                            <td>{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('d/m/Y H:i') : '-- No definida --' }}</td>
+                            <td>
+                                <span
+                                    class="badge text-bg-{{ $badgeColor }}">{{ $maintenance->status->description }}
+                                </span>
+                            </td>
                         </tr>
                     @empty
                         <tr>
@@ -100,5 +111,5 @@
             </table>
         </div>
     </div>
-    
+
 </x-app-layout>

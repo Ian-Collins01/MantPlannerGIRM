@@ -72,10 +72,10 @@ class MaintenanceController extends Controller
     {
         $validated = $request->validate([
             'date' => 'required|date',
-            'notice_hour' => 'nullable|date_format:H:i',
-            'start_hour' => 'nullable|date_format:H:i',
-            'lead_time' => 'nullable|date_format:H:i',
-            'end_hour' => 'nullable|date_format:H:i',
+            'notice_hour' => 'nullable|date_format:Y-m-d\TH:i',
+            'start_hour' => 'nullable|date_format:Y-m-d\TH:i',
+            'lead_time' => 'nullable|date_format:Y-m-d\TH:i',
+            'end_hour' => 'nullable|date_format:Y-m-d\TH:i',
             'description' => 'required|string',
             'has_stoppage_machine' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
@@ -110,6 +110,7 @@ class MaintenanceController extends Controller
                     $date->addDay(); // Mueve al siguiente día hábil
                 }
 
+
                 $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
                 $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
                 $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
@@ -125,10 +126,10 @@ class MaintenanceController extends Controller
 
                 $maintenance = Maintenance::create([
                     'date' => $date->toDateString(),
-                    'notice_hour' => $validated['notice_hour'] ?? null,
-                    'start_hour' => $validated['start_hour'] ?? null,
+                    'notice_hour' => $noticeHour,
+                    'start_hour' => $startHour,
                     'lead_time' => $leadTime,
-                    'end_hour' => $validated['end_hour'] ?? null,
+                    'end_hour' => $endHour,
                     'response_time' => $responseTime,
                     'maintenance_time' => $maintenanceTime,
                     'description' => $validated['description'],
@@ -257,10 +258,10 @@ class MaintenanceController extends Controller
     {
         $validated = $request->validate([
             'date' => 'required|date',
-            'notice_hour' => 'nullable|date_format:H:i',
-            'start_hour' => 'nullable|date_format:H:i',
-            'lead_time' => 'nullable|date_format:H:i',
-            'end_hour' => 'nullable|date_format:H:i',
+            'notice_hour' => 'nullable|date_format:Y-m-d\TH:i',
+            'start_hour' => 'nullable|date_format:Y-m-d\TH:i',
+            'lead_time' => 'nullable|date_format:Y-m-d\TH:i',
+            'end_hour' => 'nullable|date_format:Y-m-d\TH:i',
             'description' => 'required|string',
             'has_stoppage_machine' => 'nullable|boolean',
             'machine_id' => 'required|exists:machines,id',
@@ -290,10 +291,10 @@ class MaintenanceController extends Controller
             // Actualizar datos del mantenimiento
             $maintenance->update([
                 'date' => $validated['date'],
-                'notice_hour' => $validated['notice_hour'] ?? null,
-                'start_hour' => $validated['start_hour'] ?? null,
+                'notice_hour' => $noticeHour,
+                'start_hour' => $startHour,
                 'lead_time' => $leadTime,
-                'end_hour' => $validated['end_hour'] ?? null,
+                'end_hour' => $endHour,
                 'response_time' => $responseTime,
                 'maintenance_time' => $maintenanceTime,
                 'description' => $validated['description'],

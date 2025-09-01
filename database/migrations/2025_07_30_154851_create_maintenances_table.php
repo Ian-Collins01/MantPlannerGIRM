@@ -14,12 +14,12 @@ return new class extends Migration
         Schema::create('maintenances', function (Blueprint $table) {
             $table->id();
             $table->date('date');
-            $table->time('notice_hour')->nullable();
-            $table->time('start_hour')->nullable();
-            $table->time('lead_time')->nullable();
-            $table->time('end_hour')->nullable();
-            $table->time('stoppage_start')->nullable();
-            $table->time('stoppage_end')->nullable();
+            $table->dateTime('notice_hour')->nullable();
+            $table->dateTime('start_hour')->nullable();
+            $table->dateTime('lead_time')->nullable();
+            $table->dateTime('end_hour')->nullable();
+            $table->dateTime('stoppage_start')->nullable();
+            $table->dateTime('stoppage_end')->nullable();
             $table->float('response_time')->nullable();
             $table->float('maintenance_time')->nullable();
             $table->text('description');

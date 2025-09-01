@@ -112,14 +112,14 @@
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Tiempo de Respuesta</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $maintenance->response_time ? round($maintenance->response_time, 0) . ' min' : '---' }}"
+                                    value="{{ $maintenance->response_time ? round($maintenance->response_time, 2) . ' min' : '---' }}"
                                     disabled>
                             </div>
 
                             <div class="col-md-6 mb-2">
                                 <label class="form-label">Tiempo de Mantenimiento</label>
                                 <input type="text" class="form-control"
-                                    value="{{ $maintenance->maintenance_time ? round($maintenance->maintenance_time, 0) . ' min' : '---' }} "
+                                    value="{{ $maintenance->maintenance_time ? round($maintenance->maintenance_time, 2) . ' min' : '---' }} "
                                     disabled>
                             </div>
                         </div>

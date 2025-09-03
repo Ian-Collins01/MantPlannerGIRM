@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            @if (Auth::user()->userType->name != 'Comun')
+            @if (Auth::user()->userType->name == 'Admin' || Auth::user()->userType->name == 'SuperAdmin')
                 <div class="col mb-5">
                     <div class="card-card">
                         <div class="containers-card">
@@ -85,40 +85,41 @@
                         </div>
                     </div>
                 </div>
+            @endif
 
-                <div class="col mb-5">
-                    <div class="card-card">
-                        <div class="containers-card">
-                            <div class="icon-circle-card">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="#00c867" class="bi bi-calendar-event icon"
-                                    viewBox="0 0 16 16" weight="29" width="28">
-                                    <path
-                                        d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
-                                    <path
-                                        d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
-                                </svg>
-                            </div>
-                            <div class="title-card mb-3">Calendario</div>
-                            <div class="subtitle-card">
-                            </div>
-                            <div class="d-flex justify-around">
-                                <a href="{{ route('maintenances.calendar') }}">
-                                    <div class="btnRound-card btnService-card">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
-                                            height="18" width="19">
-                                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
-                                                stroke="#23C55E"
-                                                d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
-                                            </path>
-                                        </svg>
-                                        <p class="m-2">Ver</p>
-                                    </div>
-                                </a>
-                            </div>
+            <div class="col mb-5">
+                <div class="card-card">
+                    <div class="containers-card">
+                        <div class="icon-circle-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#00c867" class="bi bi-calendar-event icon"
+                                viewBox="0 0 16 16" weight="29" width="28">
+                                <path
+                                    d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
+                                <path
+                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                        </div>
+                        <div class="title-card mb-3">Calendario</div>
+                        <div class="subtitle-card">
+                        </div>
+                        <div class="d-flex justify-around">
+                            <a href="{{ route('maintenances.calendar') }}">
+                                <div class="btnRound-card btnService-card">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
+                                        height="18" width="19">
+                                        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
+                                            stroke="#23C55E"
+                                            d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
+                                        </path>
+                                    </svg>
+                                    <p class="m-2">Ver</p>
+                                </div>
+                            </a>
                         </div>
                     </div>
                 </div>
-            @endif
+            </div>
+
         </div>
     </div>
 

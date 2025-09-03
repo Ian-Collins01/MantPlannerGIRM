@@ -100,7 +100,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5">
+                            <td colspan="7">
                                 <div class="alert alert-warning text-center m-0">
                                     No hay registros de mantenimientos con estos filtros.
                                 </div>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Auth\Events\Registered;
@@ -21,8 +22,9 @@ class RegisteredUserController extends Controller
     public function create(): View
     {
         $userTypes = UserType::all();
+        $departments = Department::all();
 
-        return view('auth.register', compact('userTypes'));
+        return view('auth.register', compact('userTypes', 'departments'));
     }
 
     /**
@@ -35,6 +37,7 @@ class RegisteredUserController extends Controller
         $request->validate([
             'employee_number' => ['required', 'string', 'max:255', 'unique:'.User::class],
             'name' => ['required', 'string', 'max:255'],
+            'department_id' => ['required'],
             'user_type_id' => ['required'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
@@ -44,6 +47,7 @@ class RegisteredUserController extends Controller
             'employee_number' => $request->employee_number,
             'name' => $request->name,
             'user_type_id' => $request->user_type_id,
+            'department_id' => $request->department_id,
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);

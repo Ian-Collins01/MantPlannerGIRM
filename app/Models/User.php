@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'employee_number',
+        'department_id',
         'name',
         'user_type_id',
         'email',
@@ -50,5 +51,9 @@ class User extends Authenticatable
     public function userType()
     {
         return $this->belongsTo(UserType::class);
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }

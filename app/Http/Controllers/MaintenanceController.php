@@ -27,7 +27,7 @@ class MaintenanceController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Maintenance::with(['machine', 'technician', 'maintenanceType']);
+        $query = Maintenance::with(['machine', 'technician', 'maintenanceType', 'applicant']);
 
         $start_date = $request->input('start_date') ?? Carbon::now()->toDateString();
         $end_date = $request->input('end_date') ?? Carbon::now()->toDateString();
@@ -39,7 +39,15 @@ class MaintenanceController extends Controller
         }
 
         if (Auth::user()->userType->name === 'Comun') {
-            $query->where('applicant_id', Auth::user()->id);
+            $departmentId = Auth::user()->department_id;
+
+            $query->whereHas('applicant', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
+            });
+        }
+
+        if (Auth::user()->userType->name === 'Maintenance') {
+            $query->where('technician_id', Auth::user()->id);
         }
 
         $maintenances = $query->orderBy('date')->get();
@@ -376,19 +384,34 @@ class MaintenanceController extends Controller
         Carbon::setLocale('es');
         $date = Carbon::createFromDate($year, $month, 1)->startOfMonth();
 
-        $maintenances = Maintenance::with(['machine', 'technician'])
+        $query = Maintenance::with(['machine', 'technician', 'applicant'])
             ->whereMonth('date', $date->month)
-            ->whereYear('date', $date->year)
-            ->get()
-            ->groupBy(function ($item) {
-                return $item->date;
+            ->whereYear('date', $date->year);
+
+        // Filtro por tipo de usuario
+        if (Auth::user()->userType->name === 'Comun') {
+            $departmentId = Auth::user()->department_id;
+
+            $query->whereHas('applicant', function ($q) use ($departmentId) {
+                $q->where('department_id', $departmentId);
             });
+        }
+
+        if (Auth::user()->userType->name === 'Maintenance') {
+            $query->where('technician_id', Auth::user()->id);
+        }
+
+        // Obtener resultados y agrupar por fecha
+        $maintenances = $query->get()->groupBy(function ($item) {
+            return $item->date;
+        });
 
         return view('maintenances.calendar', [
             'currentDate' => $date,
             'maintenances' => $maintenances,
         ]);
     }
+
 
     public function ticket()
     {

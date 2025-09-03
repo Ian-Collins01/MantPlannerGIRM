@@ -9,14 +9,16 @@
         <div class="card">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
-                    <a href="{{ route('maintenances.calendar', [$currentDate->copy()->subMonth()->year, $currentDate->copy()->subMonth()->month]) }}">
+                    <a
+                        href="{{ route('maintenances.calendar', [$currentDate->copy()->subMonth()->year, $currentDate->copy()->subMonth()->month]) }}">
                         <x-primary-button>← Mes anterior</x-primary-button>
                     </a>
 
                     <h3>{{ $currentDate->isoFormat('MMMM YYYY') }}</h3>
 
 
-                    <a href="{{ route('maintenances.calendar', [$currentDate->copy()->addMonth()->year, $currentDate->copy()->addMonth()->month]) }}">
+                    <a
+                        href="{{ route('maintenances.calendar', [$currentDate->copy()->addMonth()->year, $currentDate->copy()->addMonth()->month]) }}">
                         <x-primary-button>Mes siguiente →</x-primary-button>
                     </a>
                 </div>
@@ -45,8 +47,11 @@
                                     <strong>{{ $date->day }}</strong>
 
                                     @foreach ($maintenances->get($date->format('Y-m-d'), []) as $maintenance)
+                                        @php
+                                            $badgeColor = \App\Models\Status::badgeColor($maintenance->status->id);
+                                        @endphp
                                         <a href="{{ route('maintenances.show', $maintenance) }}">
-                                            <div class="badge bg-secondary d-block text-start mt-1">
+                                            <div class="badge bg-{{$badgeColor}} d-block text-start mt-1">
                                                 {{ $maintenance->machine->name }}<br>
                                                 <small>{{ $maintenance->technician->name ?? '-- No Asignado --' }}</small>
                                             </div>

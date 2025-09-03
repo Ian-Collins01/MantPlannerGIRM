@@ -34,7 +34,24 @@
                 </select>
                 <x-input-error :messages="$errors->get('user_type_id')" class="mt-2" />
             </div>
+        </div>
 
+        <!-- Department -->
+        <div class="mt-4">
+            <div class="row">
+                <x-input-label for="name" :value="__('Departamento')" />
+
+                <select name="department_id" id="department_id" class="form-control" required style="width: 100%">
+                    <option value="" disabled selected>---</option>
+                    @foreach ($departments as $department)
+                        <option value="{{ $department->id }}"
+                            {{ old('department_id') == $department->id ? 'selected' : '' }}>
+                            {{ $department->description }}
+                        </option>
+                    @endforeach
+                </select>
+                <x-input-error :messages="$errors->get('department_id')" class="mt-2" />
+            </div>
         </div>
 
         <!-- Email Address -->

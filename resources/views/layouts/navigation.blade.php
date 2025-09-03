@@ -20,15 +20,16 @@
                         {{ __('Mantenimientos') }}
                     </x-nav-link>
 
-                    @if (Auth::user()->userType->name != 'Comun')
+                    @if (Auth::user()->userType->name == 'Admin' || Auth::user()->userType->name == 'SuperAdmin')
                         <x-nav-link :href="route('task-headers.index')" :active="request()->routeIs('task-headers.index')">
                             {{ __('Lista de Actividades') }}
                         </x-nav-link>
-
-                        <x-nav-link :href="route('maintenances.calendar')" :active="request()->routeIs('maintenances.calendar')">
-                            {{ __('Calendario') }}
-                        </x-nav-link>
                     @endif
+
+                    <x-nav-link :href="route('maintenances.calendar')" :active="request()->routeIs('maintenances.calendar')">
+                        {{ __('Calendario') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 
@@ -97,15 +98,16 @@
                 {{ __('Mantenimientos') }}
             </x-responsive-nav-link>
 
-            @if (Auth::user()->userType->name != 'Comun')
+            @if (Auth::user()->userType->name == 'Admin' || Auth::user()->userType->name == 'SuperAdmin')
                 <x-responsive-nav-link :href="route('task-headers.index')" :active="request()->routeIs('task-headers.index')">
                     {{ __('Lista de Actividades') }}
                 </x-responsive-nav-link>
-
-                <x-responsive-nav-link :href="route('maintenances.calendar')" :active="request()->routeIs('maintenances.calendar')">
-                    {{ __('Calendario') }}
-                </x-responsive-nav-link>
             @endif
+
+            <x-responsive-nav-link :href="route('maintenances.calendar')" :active="request()->routeIs('maintenances.calendar')">
+                {{ __('Calendario') }}
+            </x-responsive-nav-link>
+
         </div>
 
         <!-- Responsive Settings Options -->

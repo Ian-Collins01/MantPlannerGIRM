@@ -24,6 +24,18 @@
         </div>
 
         <div>
+            <x-input-label for="user_type_id" :value="__('Tipo de Usuario')" />
+            <x-text-input id="user_type_id" name="user_type_id" type="text" class="mt-1 block w-full" :value="old('user_type_id', $user->userType->name)" disabled autofocus autocomplete="user_type_id" />
+            <x-input-error class="mt-2" :messages="$errors->get('user_type_id')" />
+        </div>
+
+        <div>
+            <x-input-label for="department_id" :value="__('Departamento')" />
+            <x-text-input id="department_id" name="department_id" type="text" class="mt-1 block w-full" :value="old('department_id', $user->department->description)" disabled autofocus autocomplete="department_id" />
+            <x-input-error class="mt-2" :messages="$errors->get('department_id')" />
+        </div>
+
+        <div>
             <x-input-label for="email" :value="__('Correo electrónico')" />
             <x-text-input id="email" name="email" type="email" class="mt-1 block w-full" :value="old('email', $user->email)" required autocomplete="username" />
             <x-input-error class="mt-2" :messages="$errors->get('email')" />

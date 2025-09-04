@@ -18,8 +18,6 @@ return new class extends Migration
             $table->dateTime('start_hour')->nullable();
             $table->dateTime('lead_time')->nullable();
             $table->dateTime('end_hour')->nullable();
-            $table->dateTime('stoppage_start')->nullable();
-            $table->dateTime('stoppage_end')->nullable();
             $table->float('response_time')->nullable();
             $table->float('maintenance_time')->nullable();
             $table->text('description');

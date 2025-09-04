@@ -8,15 +8,17 @@
                     {{ $maintenance->status->description }}
                 </span>
             </h2>
-            <div>
-                <a
-                    href="{{ route(
-                        Auth::user()->userType->name === 'Comun' ? 'maintenances.edit_ticket' : 'maintenances.edit',
-                        $maintenance,
-                    ) }}">
-                    <x-primary-button>Editar</x-primary-button>
-                </a>
-            </div>
+            @if ($maintenance->status->description == 'Nuevo')
+                <div>
+                    <a
+                        href="{{ route(
+                            Auth::user()->userType->name === 'Comun' ? 'maintenances.edit_ticket' : 'maintenances.edit',
+                            $maintenance,
+                        ) }}">
+                        <x-primary-button>Editar</x-primary-button>
+                    </a>
+                </div>
+            @endif
         </div>
 
     </x-slot>

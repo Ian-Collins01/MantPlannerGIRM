@@ -120,6 +120,10 @@ class MaintenanceController extends Controller
 
 
                 $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
+
+                if ($request->is_ticket) {
+                    $noticeHour = Carbon::now();
+                }
                 $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
                 $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
                 $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
@@ -284,6 +288,10 @@ class MaintenanceController extends Controller
             DB::beginTransaction();
 
             $noticeHour = isset($validated['notice_hour']) ? Carbon::parse($validated['notice_hour']) : null;
+            if ($request->is_ticket) {
+                $noticeHour = Carbon::now();
+            }
+            
             $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
             $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
             $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
@@ -369,6 +377,10 @@ class MaintenanceController extends Controller
         try {
             DB::beginTransaction();
 
+            foreach ($maintenance->stoppages as $stoppage) {
+                $stoppage->delete();
+            }
+
             $maintenance->delete();
 
             DB::commit();
@@ -441,7 +453,7 @@ class MaintenanceController extends Controller
 
             $now = Carbon::now();
 
-            // Establecer hora de inicio y de aviso si no existen
+            // Si aún no inicia, establecer horas base
             if (!$maintenance->start_hour) {
                 $maintenance->start_hour = $now;
 
@@ -455,43 +467,60 @@ class MaintenanceController extends Controller
                 );
             }
 
-            // Cambios según el nuevo estado
             switch ((int) $request->status_id) {
-                case 2: // En curso
-                    if ($maintenance->stoppage_start && !$maintenance->stoppage_end) {
-                        $maintenance->stoppage_end = $now;
+                case 2: // En curso (reanudar)
+                    // Buscar stoppage abierto y cerrarlo
+                    $openStoppage = $maintenance->stoppages()->whereNull('end_hour')->latest()->first();
+                    if ($openStoppage) {
+                        $openStoppage->end_hour = $now;
+                        $openStoppage->save();
                     }
                     break;
 
-                case 3: // Pendiente
-                    $maintenance->stoppage_start = $now;
+                case 3: // Pendiente (pausar)
+                    // Crear nuevo stoppage solo si no hay uno abierto
+                    if (!$maintenance->stoppages()->whereNull('end_hour')->exists()) {
+                        $maintenance->stoppages()->create([
+                            'description' => 'Pausa automática por cambio a pendiente',
+                            'start_hour' => $now,
+                        ]);
+                    }
                     break;
 
                 case 5: // Cerrado
                     $maintenance->end_hour = $now;
 
-                    if ($maintenance->stoppage_start && !$maintenance->stoppage_end) {
-                        $maintenance->stoppage_end = $now;
+                    // Cerrar stoppage abierto (si lo hay)
+                    $openStoppage = $maintenance->stoppages()->whereNull('end_hour')->latest()->first();
+                    if ($openStoppage) {
+                        $openStoppage->end_hour = $now;
+                        $openStoppage->save();
                     }
 
-                    $stoppageTime = $maintenance->stoppage_start && $maintenance->stoppage_end
-                        ? round(Carbon::parse($maintenance->stoppage_start)->diffInMinutes($maintenance->stoppage_end), 2)
-                        : 0;
+                    // Calcular tiempo de mantenimiento descontando stoppages
+                    $totalStopMinutes = $maintenance->stoppages()
+                        ->whereNotNull('end_hour')
+                        ->get()
+                        ->sum(fn($s) => Carbon::parse($s->start_hour)->diffInMinutes($s->end_hour));
 
                     $maintenance->maintenance_time = round(
                         Carbon::parse($maintenance->start_hour)->diffInMinutes($maintenance->end_hour),
                         2
-                    ) - $stoppageTime;
+                    ) - $totalStopMinutes;
 
+                    // Notificar al solicitante
                     if ($maintenance->applicant) {
                         $maintenance->applicant->notify(new MaintenanceCompleted($maintenance));
                     }
                     break;
+
+                default:
+                    // Otros estados: no hacemos cálculos
+                    break;
             }
 
-            $newStatusId = $request->status_id == 5 && $maintenance->applicant ? '4' : $request->status_id;
-
-            // Actualizar estado
+            // Ajustar estado si es "cerrado con aprobación"
+            $newStatusId = $request->status_id == 5 && $maintenance->applicant ? 4 : $request->status_id;
             $maintenance->status_id = $newStatusId;
             $maintenance->save();
 

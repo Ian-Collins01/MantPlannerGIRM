@@ -9,8 +9,7 @@
         <form action="{{ route('maintenances.update', $maintenance->id) }}" method="POST">
             @csrf
             @method('PUT')
-            <input type="hidden" name="notice_hour"
-                value="{{ old('notice_hour', \Carbon\Carbon::now()->format('Y-m-d\TH:i')) }}">
+            <input type="hidden" name="is_ticket" value="true">
             <input type="hidden" name="date" value="{{ old('date', Carbon\Carbon::now()->format('Y-m-d')) }}">
             <input type="hidden" name="maintenance_type" value="1">
             <input type="hidden" name="applicant_id" value="{{ Auth::user()->id }}">

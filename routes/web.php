@@ -43,7 +43,7 @@ Route::get('/maintenances/create', [MaintenanceController::class, 'create'])
 
 // Store
 Route::post('/maintenances', [MaintenanceController::class, 'store'])
-    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->middleware(['auth', 'verified'])
     ->name('maintenances.store');
 
 // Show
@@ -58,7 +58,7 @@ Route::get('/maintenances/{maintenance}/edit', [MaintenanceController::class, 'e
 
 // Update
 Route::match(['put', 'patch'], '/maintenances/{maintenance}', [MaintenanceController::class, 'update'])
-    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->middleware(['auth', 'verified'])
     ->name('maintenances.update');
 
 // Destroy

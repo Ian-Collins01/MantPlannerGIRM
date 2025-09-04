@@ -46,4 +46,8 @@ class Maintenance extends Model
     {
         return $this->belongsTo(Status::class);
     }
+    public function stoppages()
+    {
+        return $this->hasMany(Stoppage::class);
+    }
 }

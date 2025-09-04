@@ -9,6 +9,7 @@ use App\Models\Task;
 use App\Models\TaskHeader;
 use App\Models\MaintenanceType;
 use App\Models\Status;
+use App\Models\Stoppage;
 use App\Models\User;
 use App\Models\UserType;
 use App\Notifications\MaintenanceAssigned;
@@ -217,7 +218,13 @@ class MaintenanceController extends Controller
         $enCursoStatus = Status::where('description', 'En Curso')->value('id');
         $enableTasks = $maintenance->status->id != $enCursoStatus ? 'disabled' : null;
 
-        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor', 'enableTasks'));
+        $lastStoppage = Stoppage::where('maintenance_id', $maintenance->id)
+            ->latest()
+            ->value('reason');
+
+        $reasonPending = $lastStoppage ? $lastStoppage : null;
+
+        return view('maintenances.show', compact('maintenance', 'groupedTasks', 'badgeColor', 'enableTasks', 'reasonPending'));
     }
 
 
@@ -291,7 +298,7 @@ class MaintenanceController extends Controller
             if ($request->is_ticket) {
                 $noticeHour = Carbon::now();
             }
-            
+
             $startHour = isset($validated['start_hour']) ? Carbon::parse($validated['start_hour']) : null;
             $leadTime = isset($validated['lead_time']) ? Carbon::parse($validated['lead_time']) : null;
             $endHour = isset($validated['end_hour']) ? Carbon::parse($validated['end_hour']) : null;
@@ -446,10 +453,17 @@ class MaintenanceController extends Controller
     {
         $request->validate([
             'status_id' => 'required|exists:statuses,id',
+            'reason' => 'nullable|string'
         ]);
+        
 
         try {
             DB::beginTransaction();
+
+            // Verificar si no es el mismo status
+            if ($request->status_id == $maintenance->status_id) {
+                throw new \Exception('No se puede asignar nuevamente el mismo estado del mantenimiento.');
+            }
 
             $now = Carbon::now();
 
@@ -481,7 +495,7 @@ class MaintenanceController extends Controller
                     // Crear nuevo stoppage solo si no hay uno abierto
                     if (!$maintenance->stoppages()->whereNull('end_hour')->exists()) {
                         $maintenance->stoppages()->create([
-                            'description' => 'Pausa automática por cambio a pendiente',
+                            'reason' => $request->reason ?? 'Pausa por cambio a pendiente',
                             'start_hour' => $now,
                         ]);
                     }
@@ -553,6 +567,11 @@ class MaintenanceController extends Controller
             // Si rechaza, vuelve a estado Pendiente (2) y envía correo al técnico
             $maintenance->update([
                 'status_id' => $pendienteStatusId, // Pendiente
+            ]);
+
+            $maintenance->stoppages()->create([
+                'reason' => 'Pendiente por rechazo',
+                'start_hour' => Carbon::now(),
             ]);
 
             // Enviar notificación al técnico

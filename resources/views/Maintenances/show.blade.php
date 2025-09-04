@@ -24,6 +24,15 @@
     </x-slot>
 
     <div class="container mt-4">
+        @if ($reasonPending && $maintenance->status->description == 'Pendiente')
+            <div class="d-flex justify-center ">
+                <div class="card mb-3 col-md-6">
+                    <div class="card card-body text-bg-danger ">
+                        Motivo de estar en pendiente: {{ $reasonPending }}
+                    </div>
+                </div>
+            </div>
+        @endif
         @if ($maintenance->applicant_id == Auth::user()->id && $maintenance->status->description == 'En aprobación')
             <div class="d-flex justify-center ">
                 <div class="card mb-3 col-md-6">
@@ -198,15 +207,13 @@
                                 </button>
                             </form>
 
-                            <form method="POST" action="{{ route('maintenances.updateStatus', $maintenance) }}">
-                                @csrf
-                                @method('PATCH')
-                                <input type="hidden" name="status_id" value="3">
-                                <button type="submit"
-                                    class="btn {{ $maintenance->status_id == 3 ? 'btn-danger' : 'btn-outline-danger' }}">
-                                    Pendiente
-                                </button>
-                            </form>
+                            <button data-bs-toggle="collapse" href="#collapseDescriptionPending" role="button"
+                                aria-expanded="false" aria-controls="collapseDescriptionPending"
+                                class="btn {{ $maintenance->status_id == 3 ? 'btn-danger' : 'btn-outline-danger' }}">
+                                Pendiente
+                            </button>
+
+
 
                             <form method="POST" action="{{ route('maintenances.updateStatus', $maintenance) }}">
                                 @csrf
@@ -217,6 +224,33 @@
                                     Cerrado
                                 </button>
                             </form>
+                        </div>
+                    </div>
+
+                    <div class="collapse" id="collapseDescriptionPending">
+                        <div class="card mb-2">
+                            <div class="card-header text-bg-dark">
+                                Marcar como pendiente
+                            </div>
+                            <div class="card-body">
+                                <form method="POST" action="{{ route('maintenances.updateStatus', $maintenance) }}">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <div class="mb-2">
+                                        <label class="form-label d-block">Motivo</label>
+                                        <input type="text" class="form-control" name="reason"
+                                            value="{{ old('reason') }}" required>
+                                    </div>
+
+
+                                    <input type="hidden" name="status_id" value="3">
+                                    <button type="submit"
+                                        class="btn {{ $maintenance->status_id == 3 ? 'btn-danger' : 'btn-outline-danger' }}">
+                                        Marcar como pendiente
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
 

@@ -9,7 +9,7 @@ class Stoppage extends Model
     protected $fillable = [
         'start_hour',
         'end_hour',
-        'description',
+        'reason',
     ];
     public function maintenance()
     {

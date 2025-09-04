@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('stoppages', function (Blueprint $table) {
             $table->id();
-            $table->text('description');
+            $table->text('reason');
             $table->dateTime('start_hour');
             $table->dateTime('end_hour')->nullable();
             $table->unsignedBigInteger('maintenance_id')->onDelete('cascade');;

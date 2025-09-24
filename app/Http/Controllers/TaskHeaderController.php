@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Maintenance;
+use App\Models\MaintenanceTask;
 use App\Models\TaskHeader;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,8 +125,24 @@ class TaskHeaderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TaskHeader $TaskHeader)
+    public function destroy(TaskHeader $taskHeader)
     {
-        //
+        try {
+            DB::beginTransaction();
+
+            $maintenance = MaintenanceTask::where('task_header_id',$taskHeader->id)->value('maintenance_id');
+
+            if ($maintenance) {
+                throw new \Exception('Lista de actividades asignada en el mantenimiento no. ' . $maintenance);
+            }
+
+            $taskHeader->delete();
+
+            DB::commit();
+            return redirect()->route('task-headers.index')->with('success', 'Lista de actividades eliminada correctamente.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return back()->withErrors('Error al eliminar lista de actividades: ' . $e->getMessage());
+        }
     }
 }

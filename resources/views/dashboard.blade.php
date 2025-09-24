@@ -60,7 +60,7 @@
                         <div class="containers-card">
                             <div class="icon-circle-card">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="#00c867" class="bi bi-wrench icon"
-                                    viewBox="0 0 16 16" eight="29" width="28">
+                                    viewBox="0 0 16 16" height="29" width="28">
                                     <path
                                         d="M.102 2.223A3.004 3.004 0 0 0 3.78 5.897l6.341 6.252A3.003 3.003 0 0 0 13 16a3 3 0 1 0-.851-5.878L5.897 3.781A3.004 3.004 0 0 0 2.223.1l2.141 2.142L4 4l-1.757.364zm13.37 9.019.528.026.287.445.445.287.026.529L15 13l-.242.471-.026.529-.445.287-.287.445-.529.026L13 15l-.471-.242-.529-.026-.287-.445-.445-.287-.026-.529L11 13l.242-.471.026-.529.445-.287.287-.445.529-.026L13 11z" />
                                 </svg>
@@ -70,6 +70,39 @@
                             </div>
                             <div class="d-flex justify-around">
                                 <a href="{{ route('task-headers.index') }}">
+                                    <div class="btnRound-card btnService-card">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
+                                            height="18" width="19">
+                                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
+                                                stroke="#23C55E"
+                                                d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
+                                            </path>
+                                        </svg>
+                                        <p class="m-2">Ver</p>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col mb-5">
+                    <div class="card-card">
+                        <div class="containers-card">
+                            <div class="icon-circle-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="29" width="28"
+                                    fill="#00c867" class="bi bi-motherboard icon" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11.5 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m2 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-10 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zM5 3a1 1 0 0 0-1 1h-.5a.5.5 0 0 0 0 1H4v1h-.5a.5.5 0 0 0 0 1H4a1 1 0 0 0 1 1v.5a.5.5 0 0 0 1 0V8h1v.5a.5.5 0 0 0 1 0V8a1 1 0 0 0 1-1h.5a.5.5 0 0 0 0-1H9V5h.5a.5.5 0 0 0 0-1H9a1 1 0 0 0-1-1v-.5a.5.5 0 0 0-1 0V3H6v-.5a.5.5 0 0 0-1 0zm0 1h3v3H5zm6.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />
+                                    <path
+                                        d="M1 2a2 2 0 0 1 2-2h11a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-2H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 9H1V8H.5a.5.5 0 0 1-.5-.5v-1A.5.5 0 0 1 .5 6H1V5H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 2zm1 11a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H3a1 1 0 0 0-1 1z" />
+                                </svg>
+                            </div>
+                            <div class="title-card mb-3">Máquinas</div>
+                            <div class="subtitle-card">
+                            </div>
+                            <div class="d-flex justify-around">
+                                <a href="{{ route('machines.index') }}">
                                     <div class="btnRound-card btnService-card">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
                                             height="18" width="19">

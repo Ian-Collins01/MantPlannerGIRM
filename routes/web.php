@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MachineController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskHeaderController;
@@ -117,4 +118,24 @@ Route::delete('/task-headers/{task_header}', [TaskHeaderController::class, 'dest
     ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
     ->name('task-headers.destroy');
 
+/******************************************************** MACHINE ********************************************************/
 
+// Index
+Route::get('/machines', [MachineController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('machines.index');
+
+// Store
+Route::post('/machines', [MachineController::class, 'store'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('machines.store');
+
+// Update
+Route::match(['put', 'patch'], '/machines/{machine}', [MachineController::class, 'update'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('machines.update');
+
+// Destroy
+Route::delete('/machines/{machine}', [MachineController::class, 'destroy'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('machines.destroy');

@@ -27,7 +27,7 @@
         </div>
         <div class="container">
             <footer class="py-3 my-4">
-                <p class="text-center text-body-secondary">Made with ❤ by ICG | Versión 1.0</p>
+                <p class="text-center text-body-secondary">Made with ❤ by ICG | Versión 1.1</p>
             </footer>
         </div>
     </div>

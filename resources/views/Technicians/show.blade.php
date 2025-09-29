@@ -7,7 +7,6 @@
 
     <!--Load the AJAX API-->
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script type="text/javascript">
         google.charts.load('current', {
             'packages': ['corechart']
@@ -118,12 +117,26 @@
             </div>
         </div>
 
-        <div class="card mt-3">
-            <div class="card-header text-bg-dark">
-                Mantenimiento por Máquina
+        @if ($maintenances->isNotEmpty())
+            <div class="card mt-3">
+                <div class="card-header text-bg-dark">
+                    Mantenimiento por Máquina
+                </div>
+                <div class="card-body table-responsive" id="chart_div">
+                </div>
             </div>
-            <div class="card-body table-responsive" id="chart_div">
+        @endif
+
+        <div class="d-flex justify-end m-2">
+            <div class="col-auto">
+                <div class="card card-body">
+                    <a href="{{ route('technicians.index') }}">
+                        <x-secondary-button>Regresar</x-secondary-button>
+                    </a>
+                </div>
+
             </div>
         </div>
+
     </div>
 </x-app-layout>

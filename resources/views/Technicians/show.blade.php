@@ -72,7 +72,7 @@
                 <div class="card">
                     <div class="card-header text-bg-dark fw-bold">Minutos trabajados</div>
                     <div class="card-body h2 text-center">
-                        {{ $maintenances->sum('maintenance_time') ?? 0 }}
+                        {{ $maintenances->sum('maintenance_time') ? round($maintenances->sum('maintenance_time'),2) : 0 }}
                     </div>
                 </div>
             </div>

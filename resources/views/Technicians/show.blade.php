@@ -26,8 +26,18 @@
                 data.addRow([machine, count]);
             });
 
+            var options = {
+                chartArea: {
+                    width: '70%',
+                    height: 'auto'
+                },
+            };
+
             var chart = new google.visualization.ColumnChart(document.getElementById('chart_div'));
-            chart.draw(data);
+            chart.draw(data, options);
+
+            // Hacerlo responsive
+            window.addEventListener('resize', () => chart.draw(data, options));
         }
     </script>
 

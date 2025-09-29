@@ -54,6 +54,42 @@
                 </div>
             </div>
 
+            <div class="col mb-5">
+                <div class="card-card">
+                    <div class="containers-card">
+                        <div class="icon-circle-card">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="#00c867" class="bi bi-calendar-event icon"
+                                viewBox="0 0 16 16" weight="29" width="28">
+                                <path
+                                    d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
+                                <path
+                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
+                            </svg>
+                        </div>
+                        <div class="title-card mb-3">Calendario</div>
+                        <div class="subtitle-card">
+                        </div>
+                        <div class="d-flex justify-around">
+                            <a href="{{ route('maintenances.calendar') }}">
+                                <div class="btnRound-card btnService-card">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
+                                        height="18" width="19">
+                                        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
+                                            stroke="#23C55E"
+                                            d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
+                                        </path>
+                                    </svg>
+                                    <p class="m-2">Ver</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
             @if (Auth::user()->userType->name == 'Admin' || Auth::user()->userType->name == 'SuperAdmin')
                 <div class="col mb-5">
                     <div class="card-card">
@@ -90,8 +126,8 @@
                     <div class="card-card">
                         <div class="containers-card">
                             <div class="icon-circle-card">
-                                <svg xmlns="http://www.w3.org/2000/svg" height="29" width="28"
-                                    fill="#00c867" class="bi bi-motherboard icon" viewBox="0 0 16 16">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="29" width="28" fill="#00c867"
+                                    class="bi bi-motherboard icon" viewBox="0 0 16 16">
                                     <path
                                         d="M11.5 2a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m2 0a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5m-10 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zM5 3a1 1 0 0 0-1 1h-.5a.5.5 0 0 0 0 1H4v1h-.5a.5.5 0 0 0 0 1H4a1 1 0 0 0 1 1v.5a.5.5 0 0 0 1 0V8h1v.5a.5.5 0 0 0 1 0V8a1 1 0 0 0 1-1h.5a.5.5 0 0 0 0-1H9V5h.5a.5.5 0 0 0 0-1H9a1 1 0 0 0-1-1v-.5a.5.5 0 0 0-1 0V3H6v-.5a.5.5 0 0 0-1 0zm0 1h3v3H5zm6.5 7a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h2a.5.5 0 0 0 .5-.5v-1a.5.5 0 0 0-.5-.5z" />
                                     <path
@@ -118,41 +154,38 @@
                         </div>
                     </div>
                 </div>
-            @endif
 
-            <div class="col mb-5">
-                <div class="card-card">
-                    <div class="containers-card">
-                        <div class="icon-circle-card">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="#00c867" class="bi bi-calendar-event icon"
-                                viewBox="0 0 16 16" weight="29" width="28">
-                                <path
-                                    d="M11 6.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-1a.5.5 0 0 1-.5-.5z" />
-                                <path
-                                    d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z" />
-                            </svg>
-                        </div>
-                        <div class="title-card mb-3">Calendario</div>
-                        <div class="subtitle-card">
-                        </div>
-                        <div class="d-flex justify-around">
-                            <a href="{{ route('maintenances.calendar') }}">
-                                <div class="btnRound-card btnService-card">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
-                                        height="18" width="19">
-                                        <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
-                                            stroke="#23C55E"
-                                            d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
-                                        </path>
-                                    </svg>
-                                    <p class="m-2">Ver</p>
-                                </div>
-                            </a>
+                <div class="col mb-5">
+                    <div class="card-card">
+                        <div class="containers-card">
+                            <div class="icon-circle-card">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="29" width="28"
+                                    fill="#00c867" class="bi bi-person-gear icon" viewBox="0 0 16 16">
+                                    <path
+                                        d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4m.256 7a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1zm3.63-4.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382zM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0" />
+                                </svg>
+                            </div>
+                            <div class="title-card mb-3">Técnicos</div>
+                            <div class="subtitle-card">
+                            </div>
+                            <div class="d-flex justify-around">
+                                <a href="{{ route('technicians.index') }}">
+                                    <div class="btnRound-card btnService-card">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 19 18"
+                                            height="18" width="19">
+                                            <path stroke-linejoin="round" stroke-linecap="round" stroke-width="1.5"
+                                                stroke="#23C55E"
+                                                d="M3.51141 2.78405L14.9344 6.95805C15.4154 7.13405 15.4014 7.81905 14.9134 7.97605L9.68541 9.64905L8.01241 14.8771C7.85641 15.3651 7.17041 15.3791 6.99441 14.8981L2.82141 3.47405C2.66441 3.04405 3.08141 2.62705 3.51141 2.78405Z">
+                                            </path>
+                                        </svg>
+                                        <p class="m-2">Ver</p>
+                                    </div>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-
+            @endif
         </div>
     </div>
 

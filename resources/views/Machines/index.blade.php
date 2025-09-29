@@ -19,7 +19,7 @@
                         <thead class="table-dark">
                             <tr>
                                 <th>Máquina</th>
-                                <th>Area</th>
+                                <th>Área</th>
                             </tr>
                         </thead>
                         <tbody>

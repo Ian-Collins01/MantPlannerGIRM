@@ -74,6 +74,7 @@
                         <th>Descripción</th>
                         <th>Máquina</th>
                         <th>Técnico</th>
+                        <th>Aplicante</th>
                         <th>Tipo de Mantenimiento</th>
                         <th>Entrega Estimada</th>
                         <th>Estado</th>
@@ -90,6 +91,7 @@
                             <td>{{ $maintenance->description }}</td>
                             <td>{{ $maintenance->machine->name ?? 'Sin máquina' }}</td>
                             <td>{{ $maintenance->technician->name ?? '-- No asignado --' }}</td>
+                            <td>{{ $maintenance->applicant->name ?? '-- No asignado --' }}</td>
                             <td>{{ $maintenance->maintenanceType->name ?? 'Sin tipo' }}</td>
                             <td>{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('d/m/Y H:i') : '-- No definida --' }}</td>
                             <td>

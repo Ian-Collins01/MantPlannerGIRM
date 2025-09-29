@@ -4,6 +4,7 @@ use App\Http\Controllers\MachineController;
 use App\Http\Controllers\MaintenanceController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskHeaderController;
+use App\Http\Controllers\TechnicianController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -139,3 +140,15 @@ Route::match(['put', 'patch'], '/machines/{machine}', [MachineController::class,
 Route::delete('/machines/{machine}', [MachineController::class, 'destroy'])
     ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
     ->name('machines.destroy');
+
+/******************************************************** TECHNICIAN ********************************************************/
+
+// Index
+Route::get('/technicians', [TechnicianController::class, 'index'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('technicians.index');
+
+// Show
+Route::get('/technicians/{technician}', [TechnicianController::class, 'show'])
+    ->middleware(['auth', 'verified', 'role:Admin,SuperAdmin'])
+    ->name('technicians.show');

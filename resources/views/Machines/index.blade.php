@@ -157,7 +157,10 @@
 
                 // Rellenar los inputs
                 document.getElementById('machineName').value = name;
-                document.getElementById('machineArea').value = area;
+                
+                // Rellenar el select con Select2
+                const select = $('#machineArea');
+                select.val(area).trigger('change');
 
                 // Cambiar la acción del formulario dinámicamente
                 document.getElementById('editForm').action = `/machines/${id}`;

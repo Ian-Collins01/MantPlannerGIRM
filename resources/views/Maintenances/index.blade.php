@@ -14,57 +14,68 @@
     </x-slot>
 
     <div class="container mt-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="card mb-4">
-                    <div class="card-header text-bg-dark" data-bs-toggle="collapse" data-bs-target="#collapseFilter"
-                        aria-expanded="false" aria-controls="collapseFilter">
-                        Filtros
-                    </div>
-                    <div class="collapse card-body" id="collapseFilter">
-                        <form method="GET" action="{{ route('maintenances.index') }}">
-                            <div class="row">
-                                <div class="col mb-2">
-                                    <label for="start_date" class="form-label">Fecha Inicio</label>
-                                    <input type="date" name="start_date" id="start_date"
-                                        value="{{ request('start_date', $start_date) }}" class="form-control">
-                                </div>
+        <div class="card mb-4">
+            <div class="card-header text-bg-dark" data-bs-toggle="collapse" data-bs-target="#collapseFilter"
+                aria-expanded="false" aria-controls="collapseFilter">
+                Filtros
+            </div>
+            <div class="collapse" id="collapseFilter">
+                <div class="card-body">
+                    <form method="GET" action="{{ route('maintenances.index') }}">
+                        <div class="row">
+                            <div class="col-md-3 mb-2">
+                                <label for="start_date" class="form-label">Fecha Inicio</label>
+                                <input type="date" name="start_date" id="start_date"
+                                    value="{{ request('start_date', $start_date) }}" class="form-control">
+                            </div>
 
-                                <div class="col mb-2">
-                                    <label for="end_date" class="form-label">Fecha Fin</label>
-                                    <input type="date" name="end_date" id="end_date"
-                                        value="{{ request('end_date', $end_date) }}" class="form-control">
-                                </div>
+                            <div class="col-md-3 mb-2">
+                                <label for="end_date" class="form-label">Fecha Fin</label>
+                                <input type="date" name="end_date" id="end_date"
+                                    value="{{ request('end_date', $end_date) }}" class="form-control">
+                            </div>
 
-                                <div class="col mb-2">
-                                    <label class="form-label d-block">Tipos de Mantenimiento</label>
-                                    <div class="border rounded p-3 bg-light">
-                                        <div class="d-flex flex-wrap gap-2">
-                                            @foreach ($maintenanceTypes as $type)
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="maintenance_type_ids[]" value="{{ $type->id }}"
-                                                        id="type_{{ $type->id }}"
-                                                        {{ is_array(request('maintenance_type_ids')) && in_array($type->id, request('maintenance_type_ids')) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="type_{{ $type->id }}">
-                                                        {{ $type->name }}
-                                                    </label>
-                                                </div>
-                                            @endforeach
+                            <div class="col mb-2">
+                                <label class="form-label d-block">Tipos de Mantenimiento</label>
+                                <div class="form-control">
+                                    @foreach ($maintenanceTypes as $type)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox"
+                                                name="maintenance_type_ids[]" value="{{ $type->id }}"
+                                                id="type_{{ $type->id }}"
+                                                {{ is_array(request('maintenance_type_ids')) && in_array($type->id, request('maintenance_type_ids')) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="type_{{ $type->id }}">
+                                                {{ $type->name }}
+                                            </label>
                                         </div>
-                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
 
-                            <div class="text-end">
-                                <x-primary-button>Filtrar</x-primary-button>
+                            <div class="col mb-2">
+                                <label class="form-label d-block">Estado</label>
+                                <div class="form-control">
+                                    @foreach ($statuses as $status)
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="checkbox" name="status_ids[]"
+                                                value="{{ $status->id }}" id="status{{ $status->id }}"
+                                                {{ is_array(request('status_ids')) && in_array($status->id, request('status_ids')) ? 'checked' : '' }}>
+                                            <label class="form-check-label" for="type_{{ $status->id }}">
+                                                {{ $status->description }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                </div>
                             </div>
-                        </form>
-                    </div>
+                        </div>
+
+                        <div class="text-end">
+                            <x-primary-button>Filtrar</x-primary-button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
-
 
         <div class="card table-responsive">
             <table class="table table-bordered table-hover">
@@ -93,7 +104,8 @@
                             <td>{{ $maintenance->technician->name ?? '-- No asignado --' }}</td>
                             <td>{{ $maintenance->applicant->name ?? '-- No asignado --' }}</td>
                             <td>{{ $maintenance->maintenanceType->name ?? 'Sin tipo' }}</td>
-                            <td>{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('d/m/Y H:i') : '-- No definida --' }}</td>
+                            <td>{{ $maintenance->lead_time ? \Carbon\Carbon::parse($maintenance->lead_time)->format('d/m/Y H:i') : '-- No definida --' }}
+                            </td>
                             <td>
                                 <span
                                     class="badge text-bg-{{ $badgeColor }}">{{ $maintenance->status->description }}

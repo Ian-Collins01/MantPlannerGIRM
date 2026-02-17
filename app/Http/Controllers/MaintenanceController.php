@@ -39,6 +39,10 @@ class MaintenanceController extends Controller
             $query->whereIn('maintenance_type', $request->maintenance_type_ids);
         }
 
+        if ($request->has('status_ids') && is_array($request->status_ids)) {
+            $query->whereIn('status_id', $request->status_ids);
+        }
+
         if (Auth::user()->userType->name === 'Comun') {
             $departmentId = Auth::user()->department_id;
 
@@ -53,8 +57,9 @@ class MaintenanceController extends Controller
 
         $maintenances = $query->orderBy('date')->get();
         $maintenanceTypes = MaintenanceType::all();
+        $statuses = Status::all();
 
-        return view('maintenances.index', compact('maintenances', 'maintenanceTypes', 'start_date', 'end_date'));
+        return view('maintenances.index', compact('maintenances','statuses', 'maintenanceTypes', 'start_date', 'end_date'));
     }
 
     /**

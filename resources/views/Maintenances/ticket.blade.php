@@ -33,6 +33,22 @@
                         </select>
                     </div>
 
+                    <label class="form-label d-block">Tipo de Mantenimiento</label>
+                    <div class="border rounded p-3 bg-light">
+                        <div class="d-flex flex-wrap gap-3">
+                            @foreach ($types as $type)
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="maintenance_type"
+                                        value="{{ $type->id }}" id="type_{{ $type->id }}"
+                                        {{ old('maintenance_type') == $type->id ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="type_{{ $type->id }}">
+                                        {{ $type->name }}
+                                    </label>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <div class="col-12 mb-2">
                         <label class="form-label">Descripción</label>
                         <textarea name="description" rows="4" class="form-control" required>{{ old('description') }}</textarea>

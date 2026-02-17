@@ -108,7 +108,7 @@
                         </div>
 
 
-                        <div class="col-md-6 mb-2">
+                        <div class="col-md-8 mb-2">
                             <label class="form-label d-block">Tipos de Mantenimiento</label>
                             <div class="border rounded p-3 bg-light">
                                 <div class="d-flex flex-wrap gap-3">
@@ -126,7 +126,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 mb-2">
+                        <div class="col-md-4 mb-2">
                             <label class="form-label d-block">¿Hubo Paro?</label>
                             <div class="border rounded p-3 bg-light">
                                 <div class="form-check form-check-inline">

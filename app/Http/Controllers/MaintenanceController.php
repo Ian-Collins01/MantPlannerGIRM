@@ -216,7 +216,12 @@ class MaintenanceController extends Controller
         $badgeColor = Status::badgeColor($maintenance->status->id);
 
         $enCursoStatus = Status::where('description', 'En Curso')->value('id');
-        $enableTasks = $maintenance->status->id != $enCursoStatus ? 'disabled' : null;
+
+        $enableTasks = 'disabled';
+
+        if (Auth::check() && Auth::user()->userType->name != 'Comun') {
+            $enableTasks = $maintenance->status->id != $enCursoStatus ? 'disabled' : null;
+        }
 
         $lastStoppage = Stoppage::where('maintenance_id', $maintenance->id)
             ->latest()
@@ -455,7 +460,7 @@ class MaintenanceController extends Controller
             'status_id' => 'required|exists:statuses,id',
             'reason' => 'nullable|string'
         ]);
-        
+
 
         try {
             DB::beginTransaction();

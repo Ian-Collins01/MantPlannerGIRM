@@ -16,6 +16,8 @@ class MaintenanceTypeSeeder extends Seeder
         MaintenanceType::factory()->createMany([
             ['name' => 'Correctivo'],
             ['name' => 'Preventivo'],
+            ['name' => 'Cambio de molde'],
+            ['name' => 'Cambio de troquel'],
         ]);
     }
 }

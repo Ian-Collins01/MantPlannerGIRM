@@ -8,7 +8,7 @@
                     {{ $maintenance->status->description }}
                 </span>
             </h2>
-            @if ($maintenance->status->description == 'Nuevo')
+            @if ($maintenance->status->description != 'Cerrado')
                 <div>
                     <a
                         href="{{ route(
@@ -192,9 +192,9 @@
                 </div>
             </div>
 
-            @if (Auth::user()->userType->name != 'Comun')
 
-                <div class="col">
+            <div class="col">
+                @if (Auth::check() && Auth::user()->userType->name != 'Comun')
                     <div class="card text-bg-dark mb-2">
                         <div class="card-body d-flex justify-center gap-2">
                             <form method="POST" action="{{ route('maintenances.updateStatus', $maintenance) }}">
@@ -253,43 +253,41 @@
                             </div>
                         </div>
                     </div>
+                @endif
 
-                    <div class="card">
-                        <div class="card-header bg-primary text-white">
-                            Actividades del Mantenimiento
-                        </div>
-                        <div class="card-body p-0">
-                            @foreach ($groupedTasks as $headerName => $tasks)
-                                <div class="border-bottom px-3 py-2 bg-light fw-bold">
-                                    {{ $headerName }}
-                                </div>
-                                <table class="table table-bordered table-sm mb-0">
-                                    <tbody>
-                                        @foreach ($tasks as $task)
-                                            <tr>
-                                                <td class="text-center">
-                                                    <input type="checkbox" class="form-check-input toggle-task"
-                                                        data-task-id="{{ $task->id }}"
-                                                        {{ $task->completed ? 'checked' : '' }} {{ $enableTasks }}>
-                                                </td>
-                                                <td>{{ $task->task_description }}</td>
-                                                <td>
-                                                    <input type="text"
-                                                        class="form-control form-control-sm note-input"
-                                                        value="{{ $task->notes }}"
-                                                        data-task-id="{{ $task->id }}"
-                                                        id="note_{{ $task->id }}" placeholder="-- Notas --"
-                                                        {{ $enableTasks }}>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            @endforeach
-                        </div>
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        Actividades del Mantenimiento
+                    </div>
+                    <div class="card-body p-0">
+                        @foreach ($groupedTasks as $headerName => $tasks)
+                            <div class="border-bottom px-3 py-2 bg-light fw-bold">
+                                {{ $headerName }}
+                            </div>
+                            <table class="table table-bordered table-sm mb-0">
+                                <tbody>
+                                    @foreach ($tasks as $task)
+                                        <tr>
+                                            <td class="text-center">
+                                                <input type="checkbox" class="form-check-input toggle-task"
+                                                    data-task-id="{{ $task->id }}"
+                                                    {{ $task->completed ? 'checked' : '' }} {{ $enableTasks }}>
+                                            </td>
+                                            <td>{{ $task->task_description }}</td>
+                                            <td>
+                                                <input type="text" class="form-control form-control-sm note-input"
+                                                    value="{{ $task->notes }}" data-task-id="{{ $task->id }}"
+                                                    id="note_{{ $task->id }}" placeholder="-- Notas --"
+                                                    {{ $enableTasks }}>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        @endforeach
                     </div>
                 </div>
-            @endif
+            </div>
 
         </div>
     </div>

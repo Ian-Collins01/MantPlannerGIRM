@@ -59,7 +59,7 @@ class MaintenanceController extends Controller
         $maintenanceTypes = MaintenanceType::all();
         $statuses = Status::all();
 
-        return view('maintenances.index', compact('maintenances','statuses', 'maintenanceTypes', 'start_date', 'end_date'));
+        return view('maintenances.index', compact('maintenances', 'statuses', 'maintenanceTypes', 'start_date', 'end_date'));
     }
 
     /**
@@ -286,7 +286,6 @@ class MaintenanceController extends Controller
     public function update(Request $request, Maintenance $maintenance)
     {
         $validated = $request->validate([
-            'date' => 'required|date',
             'notice_hour' => 'nullable|date_format:Y-m-d\TH:i',
             'start_hour' => 'nullable|date_format:Y-m-d\TH:i',
             'lead_time' => 'nullable|date_format:Y-m-d\TH:i',
@@ -323,7 +322,6 @@ class MaintenanceController extends Controller
 
             // Actualizar datos del mantenimiento
             $maintenance->update([
-                'date' => $validated['date'],
                 'notice_hour' => $noticeHour,
                 'start_hour' => $startHour,
                 'lead_time' => $leadTime,
@@ -444,8 +442,11 @@ class MaintenanceController extends Controller
 
     public function ticket()
     {
+        $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
+        $superadminUserTypeId = UserType::where('name', 'Superadmin')->value('id');
+
         $machines = Machine::all()->groupBy('area.name');
-        $technicians = User::all();
+        $technicians = User::whereNotIn('user_type_id', [$comunUserTypeId, $superadminUserTypeId])->get();
         $types = MaintenanceType::all();
         $taskHeaders = TaskHeader::all();
 
@@ -454,9 +455,30 @@ class MaintenanceController extends Controller
 
     public function editTicket(Maintenance $maintenance)
     {
+        $comunUserTypeId = UserType::where('name', 'Comun')->value('id');
+        $superadminUserTypeId = UserType::where('name', 'Superadmin')->value('id');
         $machines = Machine::all()->groupBy('area.name');
+        $technicians = User::whereNotIn('user_type_id', [$comunUserTypeId, $superadminUserTypeId])->get();
+        $types = MaintenanceType::all();
+        $taskHeaders = TaskHeader::all();
+        $selectedTaskHeaders = $maintenance->maintenanceTasks()
+            ->pluck('task_header_id')
+            ->unique()
+            ->filter()  // Opcional: elimina nulls si hay task_header_id nulos
+            ->values()  // Reindexar el array
+            ->toArray();
 
-        return view('Maintenances.edit_ticket', compact('maintenance', 'machines'));
+        return view(
+            'Maintenances.edit_ticket',
+            compact(
+                'maintenance',
+                'machines',
+                'taskHeaders',
+                'technicians',
+                'types',
+                'selectedTaskHeaders'
+            )
+        );
     }
 
     public function updateStatus(Request $request, Maintenance $maintenance)

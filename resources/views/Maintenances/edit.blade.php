@@ -119,7 +119,7 @@
                         <div class="mb-3">
                             <label for="task_header_id" class="form-label">Plantilla de actividades</label>
                             <select name="task_header_id[]" id="task_header_id" multiple="multiple"
-                                class="form-select select2">
+                                class="form-select select2multiple">
                                 <option value="" disabled>-- Selecciona --</option>
                                 @foreach ($taskHeaders as $header)
                                     <option value="{{ $header->id }}"
